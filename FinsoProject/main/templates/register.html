@@ -22,7 +22,9 @@ background: radial-gradient(
             <form method="post" class="login-form" action="{% url 'register' %}" enctype="multipart/form-data">
                 {% csrf_token %}
                 <input type="text" name="username" placeholder="Username"/>
-                <input type="email" name="email" placeholder="Email"/>
+                <input type="email" name="email" placeholder="Email" id="email"/>
+                <button type="button" onclick="sendOtp()">Verify Email</button>
+                <input type="text" name="email_verification_otp" placeholder="OTP" id="email-otp" />
                 <input type="password" name="password1" placeholder="Password"/>
                 <input type="password" name="password2" placeholder="Confirm Password"/>
                 <input type="text" name="phone_no" placeholder="Phone Number"/>
@@ -36,5 +38,40 @@ background: radial-gradient(
             </form>
         </div>
     </div>
+
+    <!-- Modal for OTP sent confirmation -->
+    <div id="otpModal" class="modal" style="display: none;">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal()">&times;</span>
+            <p>OTP has been sent to your email. Please check your inbox and enter the OTP to verify.</p>
+        </div>
+    </div>
+
+    <script>
+        function sendOtp() {
+            const email = document.getElementById('email').value;
+            fetch('{% url 'send_otp_email' %}', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                    'X-CSRFToken': '{{ csrf_token }}'
+                },
+                body: new URLSearchParams({
+                    'email': email
+                })
+            }).then(response => response.json())
+              .then(data => {
+                  if (data.status === 'success') {
+                      document.getElementById('otpModal').style.display = 'block';
+                  } else {
+                      alert('Failed to send OTP');
+                  }
+              });
+        }
+
+        function closeModal() {
+            document.getElementById('otpModal').style.display = 'none';
+        }
+    </script>
 </body>
 </html>
