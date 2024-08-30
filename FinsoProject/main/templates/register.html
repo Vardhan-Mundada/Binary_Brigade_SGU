@@ -1,11 +1,40 @@
+{% load static %}
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <link rel="stylesheet" href="{% static 'style.css' %}">
+    <title>Finso - Register</title>
 </head>
-<body>
-    Register
+<body style="background: rgb(67, 69, 112);
+background: radial-gradient(
+    circle,
+    rgba(67, 69, 112, 1) 3%,
+    rgba(35, 36, 57, 1) 60%
+); color: white;">
+    <div class="login-page">
+        <div class="form" style="background: transparent;">
+            <div class="login" style="background: transparent;">
+                <div class="login-header">
+                    <h3>REGISTER</h3>
+                    <p>Create a new account.</p>
+                </div>
+            </div>
+            <form method="post" class="login-form" action="{% url 'register' %}" enctype="multipart/form-data">
+                {% csrf_token %}
+                <input type="text" name="username" placeholder="Username"/>
+                <input type="email" name="email" placeholder="Email"/>
+                <input type="password" name="password1" placeholder="Password"/>
+                <input type="password" name="password2" placeholder="Confirm Password"/>
+                <input type="text" name="phone_no" placeholder="Phone Number"/>
+                <input type="text" name="address" placeholder="Address"/>
+                <input type="text" name="state" placeholder="State"/>
+                <input type="text" name="zip_code" placeholder="ZIP Code"/>
+                <input type="file" name="profile_image" placeholder="Profile Image"/>
+                <input type="number" name="basic_income" placeholder="Basic Income"/>
+                <button type="submit">Register</button>
+                <p class="message">Already registered? <a href="{% url 'login' %}">Login here</a></p>
+            </form>
+        </div>
+    </div>
 </body>
 </html>
