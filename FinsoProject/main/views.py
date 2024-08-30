@@ -19,7 +19,8 @@ from .models import ExpenseCategory
 
 # Create your views here.
 def home(request):
-    return HttpResponse("Hello, World!")
+    # return HttpResponse("Hello, World!")
+    return render(request, 'base.html')
 
 
 def user_logout(request):
