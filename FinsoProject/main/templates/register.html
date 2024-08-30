@@ -27,7 +27,9 @@ background: radial-gradient(
                 <input type="text" name="email_verification_otp" placeholder="OTP" id="email-otp" />
                 <input type="password" name="password1" placeholder="Password"/>
                 <input type="password" name="password2" placeholder="Confirm Password"/>
-                <input type="text" name="phone_no" placeholder="Phone Number"/>
+                <input type="text" name="phone_no" placeholder="Phone Number" id="phone_no"/>
+                <button type="button" onclick="sendOtpMobile()">Verify Mobile</button>
+                <input type="text" name="mobile_verification_otp" placeholder="OTP" id="mobile-otp" />
                 <input type="text" name="address" placeholder="Address"/>
                 <input type="text" name="state" placeholder="State"/>
                 <input type="text" name="zip_code" placeholder="ZIP Code"/>
@@ -50,7 +52,7 @@ background: radial-gradient(
     <script>
         function sendOtp() {
             const email = document.getElementById('email').value;
-            fetch('{% url 'send_otp_email' %}', {
+            fetch("{% url 'send_otp_email' %}", {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/x-www-form-urlencoded',
@@ -71,6 +73,33 @@ background: radial-gradient(
 
         function closeModal() {
             document.getElementById('otpModal').style.display = 'none';
+        }
+
+        function sendOtpMobile() {
+            console.log("in send otp mobile")
+            const phone_no = "+91" + document.getElementById('phone_no').value;
+            console.log(phone_no)
+            fetch('{% url 'send_otp_mobile' %}', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                    'X-CSRFToken': '{{ csrf_token }}'
+                },
+                body: new URLSearchParams({
+                    'phone_no': phone_no
+                })
+            }).then(response => response.json())
+              .then(data => {
+                  if (data.status === 'success') {
+                      document.getElementById('otpModalMobile').style.display = 'block';
+                  } else {
+                      alert('Failed to send OTP');
+                  }
+              });
+        }
+
+        function closeModalMobile() {
+            document.getElementById('otpModalMobile').style.display = 'none';
         }
     </script>
 </body>
