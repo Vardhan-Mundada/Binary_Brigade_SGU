@@ -16,8 +16,11 @@ from twilio.rest import Client
 from datetime import datetime, time
 from django.utils import timezone
 from django.contrib.auth.models import User, AnonymousUser
+import os
 from dotenv import load_dotenv
-load_dotenv()
+dotenv_path = os.path.join(os.path.dirname(os.path.dirname(__file__)), 'FinsoProject', '.env')
+
+load_dotenv(dotenv_path)
 import os
 from .models import ExpenseCategory, Transaction, Income, UserProfile
 from django.db.models.functions import Coalesce
