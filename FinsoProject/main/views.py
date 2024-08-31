@@ -22,6 +22,7 @@ from .models import ExpenseCategory, Transaction, Income
 from django.db.models.functions import Coalesce
 from django.db.models import Value, DecimalField ,Sum
 from django.utils import timezone
+from .models import Stock, MutualFund, FixedDeposit
 
 
 #SMS
@@ -578,3 +579,18 @@ def get_category_response(preprocessed_input):
             return f"Here’s the spending for {original_category}: [Specific category details]"
     
     return "Here’s a general breakdown of your expenses."
+
+
+
+def get_user_investments(user):
+    stocks = Stock.objects.filter(user=user)
+    mutual_funds = MutualFund.objects.filter(user=user)
+    fixed_deposits = FixedDeposit.objects.filter(user=user)
+
+    all_investments = {
+        'stocks': stocks,
+        'mutual_funds': mutual_funds,
+        'fixed_deposits': fixed_deposits
+    }
+
+    return all_investments
