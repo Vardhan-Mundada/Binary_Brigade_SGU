@@ -1,0 +1,47 @@
+{% extends 'base.html' %}
+
+{% block title %}Home - Finso{% endblock %}
+
+
+{% block content %}
+{% load static %}
+<link rel="stylesheet" href="{% static 'style.css' %}">
+<h1>Update Transactions</h1>
+    
+    <table>
+        <thead>
+            <tr>
+                <th>Transaction ID</th>
+                <th>Amount</th>
+                <th>Notes</th>
+                <th>Current Category</th>
+                <th>New Category</th>
+                <th>Update</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for transaction in transactions %}
+            <tr>
+                <form method="post" action="">
+                    {% csrf_token %}
+                    <td>{{ transaction.id }}</td>
+                    <td>{{ transaction.amount }}</td>
+                    <td>{{ transaction.notes }}</td>
+                    <td>{{ transaction.category.name }}</td>
+                    <td>
+                        <select name="category">
+                            {% for category in categories %}
+                            <option value="{{ category.id }}" {% if category.id == transaction.category.id %}selected{% endif %}>{{ category.name }}</option>
+                            {% endfor %}
+                        </select>
+                    </td>
+                    <td>
+                        <input type="hidden" name="transaction_id" value="{{ transaction.id }}">
+                        <button type="submit">Update</button>
+                    </td>
+                </form>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+{% endblock %}

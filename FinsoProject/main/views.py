@@ -19,7 +19,7 @@ from django.contrib.auth.models import User, AnonymousUser
 from dotenv import load_dotenv
 load_dotenv()
 import os
-from .models import ExpenseCategory, Transaction, Income
+from .models import ExpenseCategory, Transaction, Income, UserProfile
 from django.db.models.functions import Coalesce
 from django.db.models import Value, DecimalField ,Sum
 from django.utils import timezone
@@ -48,7 +48,7 @@ database = firebase.database()
 
 def determine_transaction_type(message):
     message_lower = message.lower()
-    if any(keyword in message_lower for keyword in ["debited", "debit", "withdrawn"]):
+    if any(keyword in message_lower for keyword in ["debited", "debit", "withdrawn", "transferred from A/c"]):
         return "debited"
     elif any(keyword in message_lower for keyword in ["credited", "credit", "deposited"]):
         return "credited"
@@ -90,11 +90,10 @@ def is_financial_message(message):
 
 
 def extract_numeric_value(message):
-    # Regex pattern to extract any numeric value (both integers and decimals)
-    numeric_pattern = r"\b\d+\.?\d*\b"
-    numbers = re.findall(numeric_pattern, message)
-    if numbers:
-        return numbers[0]  # Return the first numeric value found
+    numeric_pattern = r"\b(?:Rs\.?|Rs|\u20B9)\s?(\d+\.?\d*)\b"
+    match = re.search(numeric_pattern, message)
+    if match:
+        return match.group(1)  
     return None
 
 
@@ -140,8 +139,8 @@ def list_of_message(message_list):
         if sender[3:] in spamList:
             continue
         
-        # if is_spam(message_content):
-        #     continue
+        if is_spam(message_content):
+            continue
         
         if is_financial_message(message_content):
             transaction_type = determine_transaction_type(message_content)
@@ -167,6 +166,7 @@ def add_to_db(processed_messages, request):
 
         try:
             # Convert amount to Decimal
+            print(f"Amount: {amount}")
             amount = Decimal(str(amount))
 
             # Parse the transaction date
@@ -178,7 +178,7 @@ def add_to_db(processed_messages, request):
                 amount=amount,
                 type=transaction_type,
                 notes=message_content,
-                category=ExpenseCategory.objects.get(id=5),
+                category=ExpenseCategory.objects.get(id=6),
                 # transaction_date=transaction_date
             )
             print(f"Transaction added: {new_transaction}")
@@ -189,10 +189,12 @@ def add_to_db(processed_messages, request):
 
 
 def transfer_messages_from_firebase_to_db(request):
-    mobile_number = "9999999999"
+    user= UserProfile.objects.get(user=request.user)
+    mobile_number = "+91" + user.phone_no
+    # mobile_number = "+919999999999"
     message_list = []
     try:
-        messages = database.child("users").child(mobile_number).child("messages").get().val()
+        messages = database.child("Users").child(mobile_number).child("messages").get().val()
 
         if messages:
             print("Messages found")
@@ -205,7 +207,7 @@ def transfer_messages_from_firebase_to_db(request):
     
     processed_messages = list_of_message(message_list)
     add_to_db(processed_messages, request)
-    # database.child("users").child(mobile_number).child("messages").remove()
+    # database.child("Users").child(mobile_number).child("messages").remove()
     return processed_messages
 
 
@@ -399,7 +401,8 @@ def analytics(request):
 
     return render(request, 'analytics.html', context)
 
-
+import matplotlib
+matplotlib.use('Agg')
 import matplotlib.pyplot as plt
 from io import BytesIO
 import base64
@@ -640,3 +643,35 @@ def get_user_investments(user):
     }
 
     return all_investments
+
+
+
+from django.shortcuts import render, redirect
+from django.contrib.auth.decorators import login_required
+from .models import Transaction, ExpenseCategory
+
+@login_required
+def update_transaction_category(request):
+    user = request.user
+    if request.method == 'POST':
+        # Handle form submission
+        transaction_id = request.POST.get('transaction_id')
+        new_category_id = request.POST.get('category')
+        
+        try:
+            transaction = Transaction.objects.get(id=transaction_id, user=user)
+            new_category = ExpenseCategory.objects.get(id=new_category_id, user=user)
+            transaction.category = new_category
+            transaction.save()
+            return redirect('update_transaction_category')  # Redirect to the same page or another page after updating
+        except (Transaction.DoesNotExist, ExpenseCategory.DoesNotExist):
+            pass  # Handle exceptions as needed
+
+    # Fetch transactions with category 'Miscellaneous'
+    transactions = Transaction.objects.filter(user=user, category__name='Miscellaneous')
+    categories = ExpenseCategory.objects.filter(user=user)
+
+    return render(request, 'update_transactions.html', {
+        'transactions': transactions,
+        'categories': categories
+    })

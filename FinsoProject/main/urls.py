@@ -20,5 +20,6 @@ urlpatterns=[
     path('addall/', views.addall, name='addall'),
     path('dashboard/', views.dashboard, name='dashboard'),
     path('export_report/', views.export_report, name='export_report'),
+    path('update-transactions/', views.update_transaction_category, name='update_transaction_category'),
     # path('expense-statistics/', views.expense_statistics, name='expense_statistics'),
 ]
