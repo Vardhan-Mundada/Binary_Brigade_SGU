@@ -1,0 +1,114 @@
+{% extends 'base.html' %}
+
+{% block title %}Add Mutual Fund{% endblock %}
+
+{% block content %}
+
+{% load static %}
+    <link rel="stylesheet" href="{% static 'style.css' %}">
+
+<style>
+    /* General container styling */
+.container {
+    margin: 2rem auto;
+    max-width: 600px;
+    padding: 1rem;
+    border-radius: 8px;
+    background-color: #f9f9f9;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+/* Heading styling */
+h1 {
+    font-size: 2rem;
+    margin-bottom: 1.5rem;
+    color: #333;
+    text-align: center;
+}
+
+/* Form styling */
+form {
+    display: flex;
+    flex-direction: column;
+}
+
+/* Form group styling */
+.form-group {
+    margin-bottom: 1rem;
+}
+
+.form-group label {
+    display: block;
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+    color: #555;
+}
+
+.form-group select,
+.form-group input {
+    width: 100%;
+    padding: 0.5rem;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    font-size: 1rem;
+}
+
+.form-group input[type="number"] {
+    -moz-appearance: textfield; /* Hide spinner arrows in Firefox */
+}
+
+.form-group input[type="date"] {
+    padding: 0.5rem;
+}
+
+/* Button styling */
+.submit-btn {
+    background-color: #007bff;
+    color: white;
+    border: none;
+    padding: 0.75rem 1.5rem;
+    border-radius: 4px;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    align-self: center;
+}
+
+.submit-btn:hover {
+    background-color: #0056b3;
+}
+
+</style>
+
+<div class="container">
+    <h1>Add Mutual Fund</h1>
+    <form method="POST">
+        {% csrf_token %}
+        <div class="form-group">
+            <label for="name">Mutual Fund Name:</label>
+            <select id="name" name="name" required>
+                {% for fund in funds %}
+                <option value="{{ fund }}">{{ fund }}</option>
+                {% endfor %}
+            </select>
+        </div>
+
+        <div class="form-group">
+            <label for="units_purchased">Units Purchased:</label>
+            <input type="number" step="0.0001" id="units_purchased" name="units_purchased" required>
+        </div>
+
+        <div class="form-group">
+            <label for="nav_at_purchase">NAV at Purchase:</label>
+            <input type="number" step="0.01" id="nav_at_purchase" name="nav_at_purchase" required>
+        </div>
+
+        <div class="form-group">
+            <label for="date_invested">Date Invested:</label>
+            <input type="date" id="date_invested" name="date_invested" required>
+        </div>
+
+        <button type="submit" class="submit-btn">Add Mutual Fund</button>
+    </form>
+</div>
+{% endblock %}

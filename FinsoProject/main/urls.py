@@ -28,5 +28,10 @@ urlpatterns=[
     path('upload_receipt/',views.billamount,name="upload_receipt"),
     path('notifications/', views.notifications, name='notifications'),
     # path('expense-statistics/', views.expense_statistics, name='expense_statistics'),
-]
+    path('add_stock/', views.add_stock, name='add_stock'),
+    path('add_mutual_fund/', views.add_mutual_fund, name='add_mutual_fund'),
+    path('add_fixed_deposit/', views.add_fixed_deposit, name='add_fixed_deposit'),
+    path('dashboard/', views.dashboard, name='dashboard'),
 
+
+]

@@ -24,6 +24,8 @@ from django.db.models.functions import Coalesce
 from django.db.models import Value, DecimalField ,Sum
 from django.utils import timezone
 from .models import Stock, MutualFund, FixedDeposit
+import requests
+from .models import Stock, MutualFund, FixedDeposit
 
 
 #SMS
@@ -532,6 +534,11 @@ def dashboard(request):
     categories = ExpenseCategory.objects.filter(user=request.user)
     recent_expenses = Transaction.objects.filter(user=request.user).order_by('-transaction_date')[:5]
     
+    # Fetch investment details
+    stocks = Stock.objects.filter(user=request.user)
+    mutual_funds = MutualFund.objects.filter(user=request.user)
+    fixed_deposits = FixedDeposit.objects.filter(user=request.user)
+    
     total_income = incomes.aggregate(total_income=Sum('amount'))['total_income'] or 0
     category_expenses = {}
     
@@ -542,12 +549,43 @@ def dashboard(request):
             'current_expense': total_expense
         }
 
+    # Calculate current value of stocks
+    stock_values = []
+    for stock in stocks:
+        current_price = 102.6
+        current_value = float(current_price) * float(stock.number_of_shares)
+        stock_values.append({
+            'ticker_symbol': stock.ticker_symbol,
+            'current_value': current_value,
+            'number_of_shares': stock.number_of_shares,
+            'purchase_price_per_share': stock.purchase_price_per_share,
+            'date_invested': stock.date_invested
+        })
+
+    # Calculate current value of mutual funds
+    mutual_fund_values = []
+    for mutual_fund in mutual_funds:
+        current_nav = 30
+        current_value = float(current_nav) * float(mutual_fund.units_purchased)
+        mutual_fund_values.append({
+            'name': mutual_fund.name,
+            'current_value': current_value,
+            'units_purchased': mutual_fund.units_purchased,
+            'nav_at_purchase': mutual_fund.nav_at_purchase,
+            'date_invested': mutual_fund.date_invested
+        })
+
     context = {
         'incomes': incomes,
         'categories': categories,
         'recent_expenses': recent_expenses,
         'category_expenses': category_expenses,
         'total_income': total_income,
+        'stocks': stocks,
+        'mutual_funds': mutual_funds,
+        'fixed_deposits': fixed_deposits,
+        'stock_values': stock_values,
+        'mutual_fund_values': mutual_fund_values,
     }
     
     return render(request, 'dashboard.html', context)
@@ -641,14 +679,29 @@ def export_report(request, format='pdf'):
 
         return response
 
-    else:
-        response = HttpResponse(content_type='text/csv')
-        response['Content-Disposition'] = 'attachment; filename="report.csv"'
-        df.to_csv(path_or_buf=response, index=False)
-
-        return response
 
     
+def parse_time_period(preprocessed_input):
+    """ Parses the time period from the user input using regex. """
+    now = datetime.now()
+    
+    # Define regex patterns for various time periods
+    patterns = {
+        r'last 30 days': now - timedelta(days=30),
+        r'last month': now.replace(day=1) - timedelta(days=1),
+        r'this month': now.replace(day=1),
+        r'last 3 months': now - timedelta(days=90),
+        r'this year': now.replace(month=1, day=1),
+        r'last year': now.replace(year=now.year - 1, month=1, day=1),
+        r'past week': now - timedelta(days=7),
+    }
+    
+    for pattern, start_date in patterns.items():
+        if re.search(pattern, preprocessed_input, re.IGNORECASE):
+            return start_date
+    
+    # Default case if no pattern matched
+    return None
 @csrf_exempt
 def chatbot(request):
     if request.method == 'POST':
@@ -690,18 +743,38 @@ def get_category_response(preprocessed_input):
     for category in preprocessed_categories:
         if category in preprocessed_input:
             original_category = categories[preprocessed_categories.index(category)]
-            
-            transactions = get_transactions_by_category_and_days(original_category)
+            sd = parse_time_period(preprocessed_input)
+            if sd is not None:
+                days = timezone.now() - sd
+            else:
+                days = 30
+            transactions = get_transactions_by_category_and_days(original_category,days)
             
             if transactions:
-                transaction_details = "\n".join(
-                    [f"Transaction ID: {transaction.id}, Amount: {transaction.amount}, Date: {transaction.transaction_date}"
+                # Format transactions for display as an HTML table
+                table_rows = "\n".join(
+                    [f"<tr><td>{transaction.id}</td><td>{transaction.amount}</td><td>{transaction.transaction_date.strftime('%Y-%m-%d')}</td><td>{transaction.notes}</td></tr>"
                      for transaction in transactions]
                 )
-                return f"Here are your transactions for the category '{original_category}':\n{transaction_details}"
+                table_html = f"""
+                <table border="1" cellpadding="5" cellspacing="0" style="width:100%; border-collapse: collapse;">
+                    <thead>
+                        <tr>
+                            <th>Transaction ID</th>
+                            <th>Amount</th>
+                            <th>Date</th>
+                            <th>Notes</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {table_rows}
+                    </tbody>
+                </table>
+                """
+                return f"Here are your transactions for the category '{original_category}' of past {days} :<br>{table_html}"
             else:
-                return f"No transactions found for the category '{original_category}'."
-    
+                return f"No transactions found for the category '{original_category}' in the specified time period."
+
     return "Here’s a general breakdown of your expenses."
 
 
@@ -918,3 +991,123 @@ def notifications(request):
             })
 
     return render(request, 'notifications.html', {'notifications': notifications})
+
+
+
+def get_nav_by_scheme_name(scheme_name):
+    
+    url = os.getenv('MUTUAL_FUNDS_API')
+    
+    headers = {
+        "x-rapidapi-key": os.getenv('MUTUAL_FUNDS_API_KEY'),
+        "x-rapidapi-host": os.getenv('MUTUAL_FUNDS_API_HOST')
+    }
+    querystring = {"Scheme_Type":"Open"}
+    api_response = requests.get(url, headers=headers, params=querystring)
+    if isinstance(api_response, requests.models.Response):
+        api_response = api_response.json()  # Directly parse JSON content
+    
+    # If api_response is a bytes object, decode and parse JSON
+    elif isinstance(api_response, bytes):
+        api_response = json.loads(api_response.decode('utf-8'))
+    
+    # If api_response is a string, parse it directly
+    elif isinstance(api_response, str):
+        api_response = json.loads(api_response)
+    
+    # Iterate over the list of schemes to find the matching one
+    for scheme in api_response:
+        if scheme['Scheme_Name'] == scheme_name:
+            return scheme['Net_Asset_Value']
+    return None
+
+def getCurrentStockValue(symbol):
+    api_key = os.getenv('ALPHA_API_KEY')
+    # https://www.alphavantage.co/query?function=TIME_SERIES_DAILY&symbol=RELIANCE.BSE&outputsize=full&apikey=demo
+    url = f'https://www.alphavantage.co/query?function=TIME_SERIES_DAILY&symbol={symbol}&outputsize=full&apikey={api_key}'
+    r = requests.get(url)
+    data = r.json()
+    print(data)
+    time_series = data["Time Series (Daily)"]
+    latest_date = next(iter(time_series))
+    latest_data = time_series[latest_date]
+
+    # Extracting the close price
+    latest_close_price = latest_data["4. close"]
+
+    return latest_close_price
+
+@login_required
+def add_stock(request):
+    if request.method == 'POST':
+        ticker_symbol = request.POST['ticker_symbol']
+        number_of_shares = request.POST['number_of_shares']
+        purchase_price_per_share = request.POST['purchase_price_per_share']
+        date_invested = request.POST['date_invested']
+
+        Stock.objects.create(
+            user=request.user,
+            ticker_symbol=ticker_symbol,
+            number_of_shares=number_of_shares,
+            purchase_price_per_share=purchase_price_per_share,
+            date_invested=date_invested
+        )
+        print('data added in fd')
+        # return redirect('dashboard')
+
+    return render(request, 'add_stock.html')
+
+@login_required
+def add_mutual_fund(request):
+    if request.method == 'POST':
+        name = request.POST['name']
+        units_purchased = request.POST['units_purchased']
+        nav_at_purchase = request.POST['nav_at_purchase']
+        date_invested = request.POST['date_invested']
+
+        MutualFund.objects.create(
+            user=request.user,
+            name=name,
+            units_purchased=units_purchased,
+            nav_at_purchase=nav_at_purchase,
+            date_invested=date_invested
+        )
+        print('data added in fd')
+
+
+        # return redirect('dashboard')
+
+    # Fetch mutual fund names from API
+    # url = os.getenv('MUTUAL_FUNDS_API')
+    # headers = {
+    #     "x-rapidapi-key": os.getenv('MUTUAL_FUNDS_API_KEY'),
+    #     "x-rapidapi-host": os.getenv('MUTUAL_FUNDS_API_HOST')
+    # }
+    # querystring = {"Scheme_Type": "Open"}
+    # api_response = requests.get(url, headers=headers, params=querystring).json()
+
+    # funds = [scheme['Scheme_Name'] for scheme in api_response]
+    funds = []
+    return render(request, 'add_mutual_fund.html', {'funds': funds})
+
+@login_required
+def add_fixed_deposit(request):
+    if request.method == 'POST':
+        bank_name = request.POST['bank_name']
+        amount_invested = request.POST['amount_invested']
+        interest_rate = request.POST['interest_rate']
+        date_invested = request.POST['date_invested']
+        maturity_date = request.POST['maturity_date']
+
+        FixedDeposit.objects.create(
+            user=request.user,
+            bank_name=bank_name,
+            amount_invested=amount_invested,
+            interest_rate=interest_rate,
+            date_invested=date_invested,
+            maturity_date=maturity_date
+        )
+        print('data added in fd')
+        # return redirect('dashboard')
+
+    return render(request, 'add_fixed_deposit.html')
