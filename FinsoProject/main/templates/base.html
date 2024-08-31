@@ -33,7 +33,7 @@
             <li><a href="{% url 'addall' %}"><i class="fas fa-plus"></i>
                     <p>Add</p>
                 </a></li>
-                <li><a href="{% url 'upload_receipt' %}"><i class="fas fa-upload"></i><span class="tooltip">Upload Bills</span></a></li>
+                <li><a href="{% url 'upload_receipt' %}"><i class="fas fa-upload"></i><p>Upload Bills</p></a></li>
             <li><a href="{% url 'transactions_list' %}"><i class="fas fa-list icon"></i>
                     <p>List</p>
                 </a></li>
@@ -64,18 +64,18 @@
         </ul>
 
     </nav>
-
+    <a href="{% url 'chatbot' %}">
+        <span class="chaticon" style="position: fixed;  top:86vh; right:5rem">
+        <i class='fas fa-comments' style='font-size:48px;color:red'></i>
+        </span>
+    </a>
     <div class="content">
         {% block content %}
         <!-- Page content goes here -->
 
         {% endblock %}
     </div>
-    <a href="{% url 'chatbot' %}">
-        <span class="chaticon" style="position: absolute; bottom: 3rem; right:5rem">
-        <i class='fas fa-comments' style='font-size:48px;color:red'></i>
-        </span>
-    </a>
+    
 </body>
 
 </html>
