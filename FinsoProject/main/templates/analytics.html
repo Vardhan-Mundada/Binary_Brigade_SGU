@@ -145,7 +145,7 @@
     <div class="container flex-container">
         <div class="left-container">
             <div class="general-info">
-                <div class="parent"">
+                <div class="parent">
                     <div class=" stat card">
                     <div class="card-content">
                         <div style="display: flex; justify-content: space-around; align-items: center;">
@@ -197,15 +197,15 @@
                 Interval:</label>
             <select id="time_interval" onchange="updateCharts()"
                 style="background: transparent; border: 2px solid rgba(255, 255, 255, 0.188); border-radius: 10px; padding: 0.8rem; color: white; font-size: 1rem; font-weight: 700;">
-                <option style="color: black;" value="weekly" {% if time_interval=='weekly' %}selected{% endif %}>Weekly
+                <option style="color: black;" value="weekly" {% if time_interval == 'weekly' %}selected{% endif %}>Weekly
                 </option>
-                <option style="color: black;" value="monthly" {% if time_interval=='monthly' %}selected{% endif %}>
+                <option style="color: black;" value="monthly" {% if time_interval == 'monthly' %}selected{% endif %}>
                     Monthly</option>
-                <option style="color: black;" value="3months" {% if time_interval=='3months' %}selected{% endif %}>3
+                <option style="color: black;" value="3months" {% if time_interval == '3months' %}selected{% endif %}>3
                     Months</option>
-                <option style="color: black;" value="6months" {% if time_interval=='6months' %}selected{% endif %}>6
+                <option style="color: black;" value="6months" {% if time_interval == '6months' %}selected{% endif %}>6
                     Months</option>
-                <option style="color: black;" value="yearly" {% if time_interval=='yearly' %}selected{% endif %}>Yearly
+                <option style="color: black;" value="yearly" {% if time_interval == 'yearly' %}selected{% endif %}>Yearly
                 </option>
             </select>
             <div
