@@ -32,6 +32,7 @@ urlpatterns=[
     path('add_mutual_fund/', views.add_mutual_fund, name='add_mutual_fund'),
     path('add_fixed_deposit/', views.add_fixed_deposit, name='add_fixed_deposit'),
     path('dashboard/', views.dashboard, name='dashboard'),
+    path('profile/', views.profile_view, name='profile'),
 
 
 ]

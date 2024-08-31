@@ -1,0 +1,44 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+{% load static %}
+<link rel="stylesheet" href="{% static 'style.css' %}">
+<div class="container">
+    <h2>User Profile</h2>
+    
+    <!-- Display user details -->
+    <div id="profile-details">
+        <img src="{{ user_profile.profile_image.url }}" alt="{{ user.username }}" width="150">
+        <p><strong>Username:</strong> {{ user.username }}</p>
+        <p><strong>Phone No:</strong> {{ user_profile.phone_no }}</p>
+        <p><strong>Address:</strong> {{ user_profile.address }}</p>
+        <p><strong>State:</strong> {{ user_profile.state }}</p>
+        <p><strong>Zip Code:</strong> {{ user_profile.zip_code }}</p>
+        <p><strong>Basic Income:</strong> {{ user_profile.basic_income }}</p>
+        <button id="edit-button" class="btn btn-primary">Edit</button>
+    </div>
+
+    <!-- Hidden edit form -->
+    <div id="edit-form" style="display: none;">
+        <form method="post" enctype="multipart/form-data">
+            {% csrf_token %}
+            {{ form.as_p }}
+            <button type="submit" class="btn btn-success">Save</button>
+            <button type="button" id="cancel-button" class="btn btn-secondary">Cancel</button>
+        </form>
+    </div>
+</div>
+
+<script>
+    document.getElementById("edit-button").onclick = function() {
+        document.getElementById("profile-details").style.display = "none";
+        document.getElementById("edit-form").style.display = "block";
+    };
+
+    document.getElementById("cancel-button").onclick = function() {
+        document.getElementById("edit-form").style.display = "none";
+        document.getElementById("profile-details").style.display = "block";
+    };
+</script>
+{% endblock %}

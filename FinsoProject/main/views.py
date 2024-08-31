@@ -4,7 +4,7 @@ from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth import authenticate, login as auth_login
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.forms import AuthenticationForm
-from .forms import UserRegistrationForm, IncomeForm , ExpenseForm, CategoryForm
+from .forms import UserRegistrationForm, IncomeForm , ExpenseForm, CategoryForm, RecurringExpenseForm, UserProfileForm
 from django.contrib import messages
 from django.core.mail import send_mail
 from django.core.cache import cache
@@ -1114,3 +1114,40 @@ def add_fixed_deposit(request):
         # return redirect('dashboard')
 
     return render(request, 'add_fixed_deposit.html')
+
+from django.shortcuts import render, redirect
+from .forms import UserProfileForm
+from .models import UserProfile
+
+def profile_view(request):
+    user_profile, created = UserProfile.objects.get_or_create(user=request.user)
+    
+    if request.method == 'POST':
+        form = UserProfileForm(request.POST, request.FILES, instance=user_profile)
+        if form.is_valid():
+            form.save()
+            return redirect('profile')  # Redirect after saving to avoid re-submission on refresh
+    else:
+        form = UserProfileForm(instance=user_profile)
+
+    return render(request, 'profile.html', {
+        'user_profile': user_profile,
+        'form': form,
+    })
+
+    user_profile, created = UserProfile.objects.get_or_create(user=request.user)
+    
+    if request.method == 'POST':
+        form = UserProfileForm(request.POST, request.FILES, instance=user_profile)
+        if form.is_valid():
+            form.save()
+            messages.success(request, 'Profile updated successfully!')
+            return redirect('profile_view')
+    else:
+        form = UserProfileForm(instance=user_profile)
+    
+    context = {
+        'form': form,
+        'user_profile': user_profile,
+    }
+    return render(request, 'profile.html', context)

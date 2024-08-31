@@ -66,3 +66,14 @@ class RecurringExpenseForm(forms.ModelForm):
 
 class ImageUploadForm(forms.Form):
     image = forms.ImageField()
+
+
+from .models import UserProfile
+
+class UserProfileForm(forms.ModelForm):
+    class Meta:
+        model = UserProfile
+        fields = ['phone_no', 'address', 'state', 'zip_code', 'profile_image', 'basic_income']
+        widgets = {
+            'profile_image': forms.ClearableFileInput(), 
+        }
