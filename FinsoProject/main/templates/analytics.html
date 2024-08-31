@@ -4,40 +4,44 @@
 
 {% block content %}
 
-    {% load static %}
-    <link rel="stylesheet" href="{% static 'style.css' %}">
+{% load static %}
+<link rel="stylesheet" href="{% static 'style.css' %}">
 
 <style>
-    body{
+    body {
         color: white !important;
     }
+
     .container {
         margin: 1rem 3rem;
         max-width: 50%;
-        }
+    }
+
     .main-container {
         padding: 1rem;
         margin-left: 3rem;
         border-radius: 1rem;
         box-shadow: 0 0.75rem 2rem 0 rgba(0, 0, 0, 0.9);
     }
-    .card{
+
+    .card {
 
         background-color: #23284051;
-    color: white;
-    margin-bottom: 10px;
-    padding: 1rem 2rem;
-    margin-right: 2rem;
-    border-radius: 2rem;
-    box-shadow: 0 0.25rem 2rem 0 rgba(0, 0, 0, 0.205);
-    min-width: 15rem;
+        color: white;
+        margin-bottom: 10px;
+        padding: 1rem 2rem;
+        margin-right: 2rem;
+        border-radius: 2rem;
+        box-shadow: 0 0.25rem 2rem 0 rgba(0, 0, 0, 0.205);
+        min-width: 15rem;
         max-width: 44%;
-}
+    }
+
     .flex-container {
         display: flex;
         flex-direction: row;
         justify-content: space-between;
-       
+
     }
 
     .general-info {
@@ -45,6 +49,7 @@
         display: flex;
         flex-wrap: wrap;
     }
+
     .parent {
         min-width: 50vw;
         display: flex;
@@ -52,219 +57,254 @@
         flex-wrap: wrap;
         justify-content: space-between;
     }
-    .income{
+
+    .income {
         min-height: 10rem;
-        min-width:  44%;
+        min-width: 44%;
     }
-    .balance{
+
+    .balance {
         background: linear-gradient(110.1deg, rgb(241, 115, 30) 18.9%, rgb(231, 29, 54) 90.7%);
         justify-content: center;
         text-align: center;
     }
-    .category_t{
+
+    .category_t {
         margin-top: 2rem;
         font-weight: 600;
 
     }
-    .right-container{
+
+    .right-container {
         margin-left: 10rem;
         margin-top: -5rem;
     }
+
     @media screen and (max-width:600px) {
-        .flex-container{
+        .flex-container {
             flex-direction: column;
-            /* align-content: center;
-            flex-wrap: wrap; */
+            /* align-content: center; */
+            flex-wrap: wrap;
         }
-        #income-bar-chart{
+
+        #income-bar-chart {
             width: 400px;
             height: 400px;
         }
-        .left-container{
+
+        .left-container {
             margin-left: 0vw;
         }
-        .income{
+
+        .income {
             display: none;
         }
-        .chart-container{
+
+        .chart-container {
             margin-top: 2rem;
             min-width: 69vw;
             text-align: center;
         }
-        .chara{
+
+        .chara {
             width: 70vw;
             margin-left: -2rem;
         }
-        .main-container{
+
+        .main-container {
             margin-left: 1vw;
         }
-        .right-container{
+
+        .right-container {
             margin-left: 1rem;
             text-align: center;
         }
-        .Expense{
+
+        .Expense {
             margin-left: 1rem;
             padding-top: 2rem;
         }
     }
-    #income-bar-chart{
-        
+
+    #income-bar-chart {
+
         width: 400px;
         height: 400px;
     }
-    .main-container{
+
+    .main-container {
         max-width: 93vw;
     }
-    
-
-
-    
 </style>
 
 <div class="main-container">
-    <h1 style="margin-left: 5rem; margin-right: 1rem; color: white; margin-top: 2rem; font-family: 'Poppins'; font-weight: 600;"><p style="color: white;">Expense Statistics</p></h1>
+    <h1
+        style="margin-left: 5rem; margin-right: 1rem; color: white; margin-top: 2rem; font-family: 'Poppins'; font-weight: 600;">
+        <p style="color: white;">Expense Statistics</p>
+    </h1>
     <div class="container flex-container">
         <div class="left-container">
             <div class="general-info">
                 <div class="parent"">
-                    <div class="stat card">
-                        <div class="card-content">
-                            <div style="display: flex; justify-content: space-around; align-items: center;">
-                                <div style="display: block;">
-                                    <p style="font-weight: 700;">Total <br> Income</p>
-                                    <p>{{ total_income }}</p>
-                                </div>
-                                <img src="{% static 'images/stat2_png.png' %}" style="height: 50%; width: 50%; padding-left: 1rem;" alt="">
-                            </div>
-                        </div>
-                    </div>
-                    <div class="stat card">
-                        <div class="card-content" style="display: flex; justify-content: space-around; align-items: center;">
+                    <div class=" stat card">
+                    <div class="card-content">
+                        <div style="display: flex; justify-content: space-around; align-items: center;">
                             <div style="display: block;">
-                                <p style="font-weight: 700;">Total Expenses: </p>
-                                <p>{{ total_expenses }}</p>
+                                <p style="font-weight: 700;">Total <br> Income</p>
+                                <p>{{ total_income }}</p>
                             </div>
-                            <img src="{% static 'images/stat_png.png' %}" style="height: 60%; width: 60%; padding-left: 1rem;" alt="">
+                            <img src="{% static 'images/stat2_png.png' %}"
+                                style="height: 50%; width: 50%; padding-left: 1rem;" alt="">
                         </div>
                     </div>
-                    
-                    <div class="stat card income">
-                        <div class="card-content">
-                            <h3 style="font-weight: 700;">Income Sources</h3>
-                            <canvas id="income-bar-chart" width="400px" height="400px"></canvas> 
+                </div>
+                <div class="stat card">
+                    <div class="card-content"
+                        style="display: flex; justify-content: space-around; align-items: center;">
+                        <div style="display: block;">
+                            <p style="font-weight: 700;">Total Expenses: </p>
+                            <p>{{ total_expenses }}</p>
                         </div>
-                    </div> 
+                        <img src="{% static 'images/stat_png.png' %}"
+                            style="height: 60%; width: 60%; padding-left: 1rem;" alt="">
+                    </div>
+                </div>
 
-                    <div class="stat card balance">
-                        <div class="card-content" style="display: flex; flex-direction: column; align-items: center;">
-                            <div style="display: block; margin-top: 1rem;">
-                                <h3 style="font-weight: 1000; line-height: 1.5rem;">Available Balance </h3>
-                                <p style="margin: 1rem auto;">{{ remaining_amount }}</p>
-                            </div>
-                            <img src="{% static 'images/bank-account.png' %}" style="height: 60%; width: 60%; padding-left: 1rem;" alt="">
-                        </div>
+                <div class="stat card income">
+                    <div class="card-content">
+                        <h3 style="font-weight: 700;">Income Sources</h3>
+                        <canvas id="income-bar-chart" width="400px" height="400px"></canvas>
                     </div>
-                    
-                                       
                 </div>
-            </div>
-            
-            <div class="chart-container" style="margin-top: 5rem; margin-bottom: 5rem;">
-                <label for="time_interval" style="color: white; padding: 2rem; font-weight: 600;">Select Time Interval:</label>
-                <select id="time_interval" onchange="updateCharts()" style="background: transparent; border: 2px solid rgba(255, 255, 255, 0.188); border-radius: 10px; padding: 0.8rem; color: white; font-size: 1rem; font-weight: 700;">
-                    <option style="color: black;" value="weekly" {% if time_interval == 'weekly' %}selected{% endif %}>Weekly</option>
-                    <option style="color: black;" value="monthly" {% if time_interval == 'monthly' %}selected{% endif %}>Monthly</option>
-                    <option style="color: black;" value="3months" {% if time_interval == '3months' %}selected{% endif %}>3 Months</option>
-                    <option style="color: black;" value="6months" {% if time_interval == '6months' %}selected{% endif %}>6 Months</option>
-                    <option style="color: black;" value="yearly" {% if time_interval == 'yearly' %}selected{% endif %}>Yearly</option>
-                </select>
-                <div style="display: flex; flex-direction: row; justify-content: space-evenly; margin-top: 2rem; margin-bottom: 2rem;">
-                    <button onclick="showPieChart()" style="background: transparent; border: 2px solid rgba(255, 255, 255, 0.164); border-radius: 10px; padding: 0.8rem; color: white; font-size: 1rem; font-weight: 700;">Show Pie Chart</button>
-                    <button onclick="showBarChart()" style="background: transparent; border: 2px solid rgba(255, 255, 255, 0.167); border-radius: 10px; padding: 0.8rem; color: white; font-size: 1rem; font-weight: 700;">Show Bar Chart</button>
+
+                <div class="stat card balance">
+                    <div class="card-content" style="display: flex; flex-direction: column; align-items: center;">
+                        <div style="display: block; margin-top: 1rem;">
+                            <h3 style="font-weight: 1000; line-height: 1.5rem;">Available Balance </h3>
+                            <p style="margin: 1rem auto;">{{ remaining_amount }}</p>
+                        </div>
+                        <img src="{% static 'images/bank-account.png' %}"
+                            style="height: 60%; width: 60%; padding-left: 1rem;" alt="">
+                    </div>
                 </div>
-                <div  style="background: rgba(0, 0, 0, 0.052); border-radius: 2rem; box-shadow: 0 0.25rem 2rem 0 rgba(0, 0, 0, 0.096);">
-                    <img class="chara"  style="border-radius: 2rem;" id="pie-chart" src="data:image/png;base64,{{ pie_chart }}" alt="Pie Chart">
-                    <img class="chara"  style="margin-left: -0rem; border-radius: 2rem;" id="bar-chart" src="data:image/png;base64,{{ bar_chart }}" alt="Bar Chart" style="display: none;">
-                </div>
+
+
             </div>
         </div>
-        <div class="right-container recent-expenses">
-            <div class="category-expenses">
-                <h2 class="category_t" style="color: white; font-weight: 750;">Category-wise Total Expenses</h2>
-                <div style="display: flex; flex-direction: column; align-items: flex-start;">
-                    {% for category in predefined_categories %}
-                        <div style="display: flex; align-items: center; font-weight: 600; box-shadow: 0 0.25rem 2rem 0 rgba(0, 0, 0, 0.205); margin-bottom: 1rem; color: rgb(255, 255, 255); background-color: rgba(92, 239, 163, 0); padding: 1rem; border-radius: 1rem; width: 300px;">
-                            <img src="{% static category.icon %}" alt="{{ category.name }}" style="width: 50px; height: 50px; margin-right: 1rem;">
-                            <div>
-                                <strong>{{ category.name }}</strong><br>
-                                Rs. {{ category.amount }}
-                            </div>
-                        </div>
-                    {% endfor %}
-                </div>
+
+        <div class="chart-container" style="margin-top: 5rem; margin-bottom: 5rem;">
+            <label for="time_interval" style="color: white; padding: 2rem; font-weight: 600;">Select Time
+                Interval:</label>
+            <select id="time_interval" onchange="updateCharts()"
+                style="background: transparent; border: 2px solid rgba(255, 255, 255, 0.188); border-radius: 10px; padding: 0.8rem; color: white; font-size: 1rem; font-weight: 700;">
+                <option style="color: black;" value="weekly" {% if time_interval=='weekly' %}selected{% endif %}>Weekly
+                </option>
+                <option style="color: black;" value="monthly" {% if time_interval=='monthly' %}selected{% endif %}>
+                    Monthly</option>
+                <option style="color: black;" value="3months" {% if time_interval=='3months' %}selected{% endif %}>3
+                    Months</option>
+                <option style="color: black;" value="6months" {% if time_interval=='6months' %}selected{% endif %}>6
+                    Months</option>
+                <option style="color: black;" value="yearly" {% if time_interval=='yearly' %}selected{% endif %}>Yearly
+                </option>
+            </select>
+            <div
+                style="display: flex; flex-direction: row; justify-content: space-evenly; margin-top: 2rem; margin-bottom: 2rem;">
+                <button onclick="showPieChart()"
+                    style="background: transparent; border: 2px solid rgba(255, 255, 255, 0.164); border-radius: 10px; padding: 0.8rem; color: white; font-size: 1rem; font-weight: 700;">Show
+                    Pie Chart</button>
+                <button onclick="showBarChart()"
+                    style="background: transparent; border: 2px solid rgba(255, 255, 255, 0.167); border-radius: 10px; padding: 0.8rem; color: white; font-size: 1rem; font-weight: 700;">Show
+                    Bar Chart</button>
             </div>
-            <h2 class="Expense" style="font-weight: 700; font-family: 'Poppins'; color: white;">Recent Expenses</h2>
-            <div class="card-container" style="margin-bottom: 5rem;">
-                {% for expense in recent_expenses %}
-                    <div class="card">
-                        <div class="card-content" style="min-width: 20vw;">
-                            <p>Date: {{ expense.transaction_date }}</p>
-                            <p>Category: {{ expense.category.name }}</p>
-                            <p>Amount: Rs.{{ expense.amount }}</p>
-                        </div>
+            <div
+                style="background: rgba(0, 0, 0, 0.052); border-radius: 2rem; box-shadow: 0 0.25rem 2rem 0 rgba(0, 0, 0, 0.096);">
+                <img class="chara" style="border-radius: 2rem;" id="pie-chart"
+                    src="data:image/png;base64,{{ pie_chart }}" alt="Pie Chart">
+                <img class="chara" style="margin-left: -0rem; border-radius: 2rem;" id="bar-chart"
+                    src="data:image/png;base64,{{ bar_chart }}" alt="Bar Chart" style="display: none;">
+            </div>
+        </div>
+    </div>
+    <div class="right-container recent-expenses">
+        <div class="category-expenses">
+            <h2 class="category_t" style="color: white; font-weight: 750;">Category-wise Total Expenses</h2>
+            <div style="display: flex; flex-direction: column; align-items: flex-start;">
+                {% for category in predefined_categories %}
+                <div
+                    style="display: flex; align-items: center; font-weight: 600; box-shadow: 0 0.25rem 2rem 0 rgba(0, 0, 0, 0.205); margin-bottom: 1rem; color: rgb(255, 255, 255); background-color: rgba(92, 239, 163, 0); padding: 1rem; border-radius: 1rem; width: 300px;">
+                    <img src="{% static category.icon %}" alt="{{ category.name }}"
+                        style="width: 50px; height: 50px; margin-right: 1rem;">
+                    <div>
+                        <strong>{{ category.name }}</strong><br>
+                        Rs. {{ category.amount }}
                     </div>
-                {% empty %}
-                    <div class="card">
-                        <div class="card-content">
-                            <p>No recent expenses found.</p>
-                        </div>
-                    </div>
+                </div>
                 {% endfor %}
             </div>
-            
-       </div>
+        </div>
+        <h2 class="Expense" style="font-weight: 700; font-family: 'Poppins'; color: white;">Recent Expenses</h2>
+        <div class="card-container" style="margin-bottom: 5rem;">
+            {% for expense in recent_expenses %}
+            <div class="card">
+                <div class="card-content" style="min-width: 20vw;">
+                    <p>Date: {{ expense.transaction_date }}</p>
+                    <p>Category: {{ expense.category.name }}</p>
+                    <p>Amount: Rs.{{ expense.amount }}</p>
+                </div>
+            </div>
+            {% empty %}
+            <div class="card">
+                <div class="card-content">
+                    <p>No recent expenses found.</p>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+
     </div>
 </div>
+</div>
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <script>
-        document.addEventListener("DOMContentLoaded", function() {
-            var ctx = document.getElementById('income-bar-chart').getContext('2d');
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        var ctx = document.getElementById('income-bar-chart').getContext('2d');
 
-            // Fetch the data from Django context
-            var incomeSourcesData = JSON.parse(document.getElementById('income-sources-data').textContent);
+        // Fetch the data from Django context
+        var incomeSourcesData = JSON.parse(document.getElementById('income-sources-data').textContent);
 
-            var incomeBarChart = new Chart(ctx, {
-                type: 'bar',
-                data: {
-                    labels: incomeSourcesData.sources,
-                    datasets: [{
-                        label: 'Income Sources',
-                        data: incomeSourcesData.amounts,
-                        backgroundColor: 'rgba(75, 192, 192, 0.9)',
-                        borderColor: 'rgba(75, 192, 192, 1)',
-                        borderWidth: 1
-                    }]
-                },
-                options: {
-                    scales: {
-                        y: {
-                            beginAtZero: true,
-                            ticks: {
-                                stepSize: 1500, // Adjust step size for better y-axis scale
-                                callback: function(value) {
-                                    if (value % 1500 === 0) {
-                                        return 'Rs.' + value;
-                                    }
+        var incomeBarChart = new Chart(ctx, {
+            type: 'bar',
+            data: {
+                labels: incomeSourcesData.sources,
+                datasets: [{
+                    label: 'Income Sources',
+                    data: incomeSourcesData.amounts,
+                    backgroundColor: 'rgba(75, 192, 192, 0.9)',
+                    borderColor: 'rgba(75, 192, 192, 1)',
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        ticks: {
+                            stepSize: 1500, // Adjust step size for better y-axis scale
+                            callback: function (value) {
+                                if (value % 1500 === 0) {
+                                    return 'Rs.' + value;
                                 }
                             }
                         }
                     }
                 }
-            });
+            }
         });
-    </script>
+    });
+</script>
 
-    <script type="application/json" id="income-sources-data">
+<script type="application/json" id="income-sources-data">
         {{ income_sources_data|safe }}
     </script>
 
@@ -285,7 +325,7 @@
     }
 
     // Set the default view to show the pie chart
-    document.addEventListener("DOMContentLoaded", function() {
+    document.addEventListener("DOMContentLoaded", function () {
         showPieChart();
     });
 </script>
