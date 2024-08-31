@@ -116,10 +116,21 @@
             font-weight: 700;
             height: fit-content;
             width: fit-content;
+            margin-top: 1rem ;
+            min-width: 180px;
+            min-height: 80px;
+        }
+        .ca{
+            align-items: center;
+            display: flex;
+            align-content: center;
+            text-align: center;
+            flex-direction: column;
+            align-items: center;
         }
         @media screen and (min-width:900px) {
-            .chart-button{
-                margin-top: 15rem;
+            .ca{
+                margin-top: 5rem;
             }
         }
     </style>
@@ -182,10 +193,17 @@
                 </table>
                 <button class="button add-button"><a href="{% url 'add_category' %}">Add Category</a></button>
             </div>
-
+            <div class="ca">
             <div class="chart-button"">
-                <a href="{% url 'charts_view' %}">View Charts</a>
+                <a href="{% url 'charts_view' %}">View <br>Charts</a>
             </div>
+            <div class="chart-button"">
+                <a href="{% url 'update_transaction_category' %}">Update Expense <br>Category</a>
+            </div>
+            <div class="chart-button">
+                <a href="{% url 'minimize_cash_flow' %}">Settle<br>Transaction</a>
+            </div>
+             </div>
         </div>
 
         <!-- Recent Expenses -->
