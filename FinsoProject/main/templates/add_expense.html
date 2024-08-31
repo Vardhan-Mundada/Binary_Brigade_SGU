@@ -1,4 +1,3 @@
-<!-- templates/add_expense.html -->
 {% extends 'base.html' %}
 
 {% block title %}Add Expense{% endblock %}
@@ -7,141 +6,111 @@
 {% load static %}
 <link rel="stylesheet" href="{% static 'style.css' %}">
 <style>
+/* Container for the entire form */
 .expense-container {
   max-width: 600px;
-  margin: 0 auto;
-  padding: 40px;
-  background-color: #f9f9f9;
-  border-radius: 8px;
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-  text-align: center;
-  margin-top: 1rem;
+  margin: 2rem auto;
+  padding: 2rem;
+  background-color: #7979ab;
+  border-radius: 10px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  animation: fadeIn 0.5s ease-in-out;
 }
 
+/* Title style */
 h1 {
-  margin-top: 0;
-  margin-bottom: 20px;
-  color: #333;
-  font-size: 24px;
+  color: #ffffff;
+  font-size: 2rem;
+  font-weight: 600;
+  margin-bottom: 1.5rem;
+  text-align: center;
 }
 
+/* Style for each form group */
 .form-group {
-  margin-bottom: 20px;
+  margin-bottom: 1.5rem;
+  color: #ffffff;
 }
 
+/* Input labels styling */
 .input-label {
   font-weight: bold;
+  margin-bottom: 0.5rem;
   display: block;
-  margin-bottom: 10px;
+  color: #cccccc;
 }
 
+/* Common styles for inputs and select elements */
 input[type="text"],
 input[type="number"],
 select,
 input[type="date"] {
-  width: calc(100% - 20px);
-  padding: 10px;
-  border: 1px solid #ccc;
-  border-radius: 4px;
-  box-sizing: border-box;
-  margin-bottom: 14px;
+  width: 100%;
+  padding: 12px;
+  border: none;
+  border-radius: 5px;
+  background-color: #2c2c3b;
+  color: #ffffff;
+  font-size: 1rem;
   transition: border-color 0.3s ease;
 }
 
+/* Focus styles for inputs and select elements */
 input[type="text"]:focus,
 input[type="number"]:focus,
 select:focus,
 input[type="date"]:focus {
-  border-color: #333;
+  outline: none;
+  border: 2px solid #007bff;
 }
 
-.btn-save {
-  background-color: #45a049;
-  margin-top: 10px;
-  margin-right: 10px; /* Add margin between buttons */
-  color: #fff;
-  padding: 10px 20px;
-  border: none;
-  border-radius: 4px;
-  cursor: pointer;
-  font-size: 16px;
-  transition: background-color 0.3s ease;
-  margin-bottom: 1rem;
-}
-
+/* Button styles */
+.btn-save,
 .btn-back {
-  background-color: #45a049;
-  padding-top: 20px;
-  margin-top: 1rem;
-  color: #fff;
-  padding: 10px 20px;
+  display: inline-block;
+  background-color: #007bff;
+  color: #ffffff;
+  padding: 0.75rem 1.5rem;
   border: none;
-  border-radius: 4px;
+  border-radius: 5px;
   cursor: pointer;
-  font-size: 16px;
-  transition: background-color 0.3s ease;
-  text-decoration: none; /* Remove underline */
+  font-size: 1rem;
+  font-weight: 600;
+  transition: background-color 0.3s ease, transform 0.3s ease;
 }
 
 .btn-save:hover,
 .btn-back:hover {
-  background-color: #0ca90f;
+  background-color: #0056b3;
+  transform: translateY(-2px);
 }
 
-/* Animation */
-@keyframes fadeIn {
-  from {
-    opacity: 0;
-  }
-  to {
-    opacity: 1;
-  }
-}
-
-.expense-container {
-  animation: fadeIn 0.5s ease-in-out;
-}
-
-.exp-form {
-  margin-top: 2rem;
-  color: white; margin-left:10rem; padding: 3rem;
-  text-align: left;
-}
-
-.exp-form form{
-  margin-top: 2rem;
-  color: white; margin-left:10rem; padding: 3rem;
-  text-align: left;
-  min-width: 40vw;
-}
-.exp-form form input{
-  max-width: 70%;
-  float: right;
-}
+/* Responsive design for mobile devices */
 @media screen and (max-width: 600px) {
   .expense-container {
-    padding: 20px;
+    padding: 1.5rem;
   }
-  .exp-form{
-
-    margin-left: 0;
-    margin-top: 0;
-    text-align: center;
+  
+  h1 {
+    font-size: 1.5rem;
+  }
+  
+  .btn-save,
+  .btn-back {
+    width: 100%;
+    margin-bottom: 1rem;
   }
 }
 
-
 </style>
-<div class="exp-form">
-    <h1 style="color: white;">Add Expense</h1>
+
+<div class="expense-container">
+    <h1>Add Expense</h1>
 
     <form method="post" action="{% url 'add_expense' %}">
         {% csrf_token %}
         {{ form.as_p }}
-        <button type="submit" style="text-decoration: none; margin-left: -2rem; background: transparent; border: 2px solid rgba(255, 255, 255, 0.164); border-radius: 10px; padding: 0.8rem; color: white; font-size: 1rem; font-weight: 700; ">Save Expense</button>
+        <button type="submit" class="btn-save">Save Expense</button>
     </form>
-    <div style="margin-top: 2rem;">
-    
-  </div>
 </div>
 {% endblock %}

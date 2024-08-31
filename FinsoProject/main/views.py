@@ -307,7 +307,7 @@ def login(request):
             print(list_of_msgs)
             # add_to_db(list_of_msgs, request)
 
-            return redirect('analytics')  
+            return redirect('home')  
         else:
             messages.error(request, 'Invalid username or password.')
     else:
@@ -602,7 +602,8 @@ from django.contrib.auth.decorators import login_required
 from reportlab.lib.pagesizes import letter
 from reportlab.lib import colors
 from reportlab.lib.styles import getSampleStyleSheet
-from reportlab.platypus import SimpleDocTemplate, Table, TableStyle, Paragraph, Spacer, Image, PageBreak
+from reportlab.platypus import SimpleDocTemplate, Table, TableStyle, Paragraph, Spacer, PageBreak
+from reportlab.platypus import Image as Im
 from reportlab.lib.units import inch
 from datetime import datetime, timedelta
 
@@ -627,11 +628,13 @@ def export_report(request, format='pdf'):
 
         styles = getSampleStyleSheet()
         title = Paragraph("Expense Report for the Last 7 Days", styles['Title'])
-        summary = Paragraph(f"Generated on {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}", styles['Normal'])
+        summary = Paragraph(f"Generated on {datetime.now().strftime('%d:%m:%Y %H:%M')}", styles['Normal'])
 
         data = [['Date', 'Amount', 'Notes', 'Category']]
         for index, row in df.iterrows():
-            data.append([row['transaction_date'], row['amount'], row['notes'], row['category__name']])
+            formatted_date = row['transaction_date'].strftime('%d:%m:%Y %H:%M')
+            truncated_notes = (row['notes'][:30] + '...') if len(row['notes']) > 30 else row['notes']
+            data.append([formatted_date, row['amount'], truncated_notes, row['category__name']])
 
         transaction_table = Table(data, colWidths=[2 * inch, 1.5 * inch, 3 * inch, 1.5 * inch])
         transaction_table.setStyle(TableStyle([
@@ -670,10 +673,10 @@ def export_report(request, format='pdf'):
         plt.close()
         img_buffer.seek(0)
 
-        report_image = Image(img_buffer, 4.5 * inch, 2.5 * inch)  
+        report_image = Im(img_buffer, 4.5 * inch, 2.5 * inch)
 
         elements = [title, summary, Spacer(1, 12), Paragraph("Transactions:", styles['Heading2']), transaction_table,
-                    PageBreak(),  
+                    PageBreak(),
                     Paragraph("Category-Wise Expenses:", styles['Heading2']), category_table, Spacer(1, 24), report_image]
 
         doc.build(elements)
@@ -682,7 +685,6 @@ def export_report(request, format='pdf'):
         buffer.close()
 
         return response
-
 
     
 def parse_time_period(preprocessed_input):

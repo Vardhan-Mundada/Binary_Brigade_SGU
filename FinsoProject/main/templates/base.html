@@ -26,22 +26,20 @@
                 </label>
             </li>
             {% if user.is_authenticated %}
-            <li><a class="active" href="{% url 'login' %}"><i class="fas fa-home icon"></i>
-                <p>Home</p>
-            </a></li>
+            
             <li><a class="active" href="{% url 'profile' %}"><i class="fas fa-home icon"></i>
                 <p>Profile</p>
             </a></li>
             <li><a href="{% url 'addall' %}"><i class="fas fa-plus"></i>
                     <p>Add</p>
                 </a></li>
-            <li><a href="{% url 'analytics' %}"><i class="fas fa-list icon"></i>
+            <li><a href="{% url 'transactions_list' %}"><i class="fas fa-list icon"></i>
                     <p>List</p>
                 </a></li>
             <li><a href="{% url 'dashboard' %}"><i class="fas fa-tachometer-alt icon"></i>
                     <p>Dashboard</p>
                 </a></li>
-            <li><a href="#"><i class="fas fa-chart-line icon"></i>
+            <li><a href="{% url 'analytics' %}"><i class="fas fa-chart-line icon"></i>
                     <p>Analytics</p>
                 </a></li>
             <li><a href="{% url 'notifications' %}"><i class="fas fa-bell icon"></i>

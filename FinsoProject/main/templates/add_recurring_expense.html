@@ -1,26 +1,128 @@
-
 {% extends 'base.html' %}
 
-{% block title %}Expense Statistics{% endblock %}
+{% block title %}Add Recurring Expense{% endblock %}
 
 {% block content %}
 {% load static %}
 <link rel="stylesheet" href="{% static 'style.css' %}">
-    <link rel="stylesheet" href="{% static 'recurring.css' %}">
-    <div style="margin-left: 5rem;">
+<link rel="stylesheet" href="{% static 'recurring.css' %}">
+
+<style>
+    .container {
+        display: flex;
+        flex-direction: row;
+        justify-content: space-between;
+        align-items: flex-start;
+        margin: 2rem 5rem;
+        flex-wrap: wrap;
+    }
+
+    .form-container {
+        flex: 1;
+        background-color: #23284051;
+        color: white;
+        padding: 2rem;
+        border-radius: 1rem;
+        box-shadow: 0 0.75rem 2rem 0 rgba(0, 0, 0, 0.7);
+        margin-right: 2rem;
+    }
+
+    .form-container h1 {
+        font-size: 2rem;
+        margin-bottom: 1rem;
+        font-weight: 600;
+    }
+
+    .form-container button {
+        background-color: #f1731e;
+        color: white;
+        border: none;
+        padding: 0.8rem 1.5rem;
+        border-radius: 0.5rem;
+        font-size: 1rem;
+        cursor: pointer;
+        transition: background-color 0.3s;
+        font-weight: 700;
+    }
+
+    .form-container button:hover {
+        background-color: #e71d36;
+    }
+
+    .cards-container {
+        flex: 1;
+        max-width: 45%;
+        margin-top: 2rem;
+    }
+
+    .card {
+        background-color: #23284051;
+        color: white;
+        padding: 1.5rem;
+        border-radius: 1rem;
+        box-shadow: 0 0.75rem 2rem 0 rgba(0, 0, 0, 0.5);
+        margin-bottom: 1.5rem;
+    }
+
+    .card h2 {
+        font-size: 1.5rem;
+        margin-bottom: 0.5rem;
+        font-weight: 600;
+    }
+
+    .card p {
+        font-size: 1rem;
+    }
+
+    @media screen and (max-width: 768px) {
+        .container {
+            flex-direction: column;
+            margin: 2rem;
+        }
+
+        .form-container,
+        .cards-container {
+            max-width: 100%;
+            margin: 0;
+            padding: 1.5rem;
+        }
+
+        .form-container {
+            margin-bottom: 2rem;
+        }
+
+        .form-container h1 {
+            font-size: 1.5rem;
+        }
+
+        .form-container button {
+            padding: 0.6rem 1rem;
+            font-size: 0.9rem;
+        }
+
+        .card h2 {
+            font-size: 1.3rem;
+        }
+
+        .card p {
+            font-size: 0.9rem;
+        }
+    }
+</style>
+
 <div class="container">
-    <div class="form-container" style="background-color: transparent; color: white; box-shadow: 0 0.25rem 2rem 0 rgba(0, 0, 0, 0.499); ">
-        <h1 style="color: white;">Add Recurring Expense</h1>
+    <div class="form-container">
+        <h1>Add Recurring Expense</h1>
         <form method="post">
             {% csrf_token %}
             {{ form.as_p }}
             <button type="submit">Save</button>
         </form>
     </div>
-    <div class="cards-container" style="max-width: 40vw;">
+    <div class="cards-container">
         {% for expense in recurring_expenses %}
-        <div class="card" style="color: white; background-color: transparent; color: white; box-shadow: 0 0.25rem 2rem 0 rgba(0, 0, 0, 0.499); ">
-            <h2 style="color: rgba(255, 255, 255, 0.792);">{{ expense.name }}</h2>
+        <div class="card">
+            <h2>{{ expense.name }}</h2>
             <p>Amount: ${{ expense.amount }}</p>
             <p>Next Due Date: {{ expense.next_due_date }}</p>
         </div>
@@ -28,7 +130,6 @@
         <p>No recurring expenses found.</p>
         {% endfor %}
     </div>
-</div>
 </div>
 
 {% endblock %}
