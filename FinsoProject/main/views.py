@@ -887,3 +887,34 @@ def billamount(request):
     else:
         form = ImageUploadForm()
     return render(request, 'upload_receipt.html', {'form': form})
+
+
+from django.shortcuts import render
+from django.contrib.auth.decorators import login_required
+from .models import ExpenseCategory, Transaction
+from django.db.models import Sum
+
+@login_required
+def notifications(request):
+    user = request.user
+    categories = ExpenseCategory.objects.filter(user=user)
+    notifications = []
+
+    for category in categories:
+        print(category)
+        total_expenses = Transaction.objects.filter(
+            user=user,
+            category=category
+        ).aggregate(total=Sum('amount'))['total'] or 0 
+        
+        print(total_expenses)
+
+        if total_expenses > category.budget_limit:
+            notifications.append({
+                'category': category.name,
+                'budget_limit': category.budget_limit,
+                'current_expenses': total_expenses,
+                'overspend': total_expenses - category.budget_limit
+            })
+
+    return render(request, 'notifications.html', {'notifications': notifications})

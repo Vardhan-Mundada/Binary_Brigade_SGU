@@ -1,0 +1,26 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container mt-4">
+    <h2 class="mb-4 text-center">Budget Notifications</h2>
+
+    {% if notifications %}
+        <div class="row">
+            {% for notification in notifications %}
+                <div class="col-md-4">
+                    <div class="card mb-4 shadow-sm notification-box">
+                        <div class="card-body">
+                            <h5 class="card-title">{{ notification.category }}</h5>
+                            <p class="card-text">Budget limit: <span class="text-muted">${{ notification.budget_limit|floatformat:2 }}</span></p>
+                            <p class="card-text">Current expenses: <span class="text-primary">${{ notification.current_expenses|floatformat:2 }}</span></p>
+                            <p class="card-text text-danger">Overspend: ${{ notification.overspend|floatformat:2 }}</p>
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    {% else %}
+        <p class="alert alert-info text-center">No budget limits have been exceeded.</p>
+    {% endif %}
+</div>
+{% endblock %}

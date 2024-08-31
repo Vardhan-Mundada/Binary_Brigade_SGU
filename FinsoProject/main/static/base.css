@@ -10,13 +10,20 @@ body {
     font-family: "Montserrat", sans-serif;
 }
 
-.navv ul{
+.navv ul {
     z-index: 1000;
 }
+
 .navv {
-    background: rgba(35, 36, 57, 1);
-    height: 80px;
+    background: rgb(61, 63, 96);
+    height: 60px;
     width: 100%;
+    border-radius: 20px;
+    margin-top: 10px;
+    display: flex;
+
+    justify-content: space-between;
+    align-items: center;
 }
 
 label.logo {
@@ -50,15 +57,18 @@ label.logo {
 }
 
 .navv ul li a p {
-    display: none; /* Hide text by default */
+    display: none;
+    /* Hide text by default */
     margin-left: 8px;
 }
 
 .navv ul li a i {
-    font-size: 20px; /* Adjust icon size if needed */
+    font-size: 20px;
+    /* Adjust icon size if needed */
 }
 
-a.active, a:hover {
+a.active,
+a:hover {
     background: rgba(21, 21, 34, 0.897);
     transition: .5s;
 }
@@ -76,29 +86,53 @@ a.active, a:hover {
 #check {
     display: none;
 }
-.navul{
+
+.navul {
     margin-top: 1rem;
 }
+
 /* Hide icons and show text on mobile */
-@media (max-width: 952px) {
+@media (max-width: 380px) {
+
+    .navv {
+        flex-direction: row-reverse;
+        border-radius: 5px;
+    }
+
     label.logo {
-        font-size: 30px;
+        font-size: 25px;
         padding-left: 50px;
     }
-    .navv ul li a i {
-        display: none; /* Hide icons on mobile */
+
+    .navv ul {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        flex-direction: column;
     }
+
+    .navv ul li a i {
+        display: none;
+        /* Hide icons on mobile */
+    }
+
     .navv ul li a p {
-        display: inline; /* Show text on mobile */
+        display: inline;
+        /* Show text on mobile */
         font-size: 16px;
     }
 }
 
 /* Show sidebar menu on mobile */
-@media (max-width: 858px) {
+@media (max-width: 380px) {
     .checkbtn {
         display: block;
     }
+
+    .cross {
+        margin-right: 20px;
+    }
+
     ul {
         position: fixed;
         width: 100%;
@@ -109,22 +143,28 @@ a.active, a:hover {
         text-align: center;
         transition: all .5s;
     }
+
     .navv ul li {
         display: block;
-        margin: 50px 0;
         line-height: 30px;
     }
+
     .navv ul li a {
         font-size: 20px;
     }
-    a:hover, a.active {
+
+    a:hover,
+    a.active {
         background: none;
         color: #0082e6;
     }
-    #check:checked ~ ul {
+
+    #check:checked~ul {
         left: 0;
+        top: 0;
     }
-    .navul{
+
+    .navul {
         margin-top: 0;
     }
 }

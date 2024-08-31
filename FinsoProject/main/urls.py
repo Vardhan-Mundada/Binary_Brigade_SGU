@@ -26,5 +26,7 @@ urlpatterns=[
     path('export/report/<str:format>/', views.export_report, name='export_report'),
     path('add_recurring_expense/', views.add_recurring_expense, name='add_recurring_expense'),
     path('upload_receipt/',views.billamount,name="upload_receipt"),
-    # path('expense-statistics/', view      s.expense_statistics, name='expense_statistics'),
+    path('notifications/', views.notifications, name='notifications'),
+    # path('expense-statistics/', views.expense_statistics, name='expense_statistics'),
 ]
+

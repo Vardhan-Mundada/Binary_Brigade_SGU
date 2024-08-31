@@ -1,0 +1,25 @@
+/* Add this to your base template or main CSS file */
+
+.notification-box {
+    background-color: #f8f9fa; /* Light grey background */
+    border-radius: 8px; /* Rounded corners */
+    transition: transform 0.2s; /* Smooth hover effect */
+}
+
+.notification-box:hover {
+    transform: scale(1.02); /* Slight zoom on hover */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Add shadow on hover */
+}
+
+.card-title {
+    font-weight: bold; /* Bold font for card title */
+    color: #343a40; /* Dark text color */
+}
+
+.text-primary {
+    color: #007bff !important; /* Custom color for current expenses */
+}
+
+.text-danger {
+    font-weight: bold; /* Make overspend text bold */
+}

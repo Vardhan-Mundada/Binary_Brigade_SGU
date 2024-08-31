@@ -6,186 +6,185 @@
 {% load static %}
 <link rel="stylesheet" href="{% static 'style.css' %}">
 <style>
-    * {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
-}
+  * {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+  }
 
-html {
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-}
+  html {
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
 
-body {
-  /* max-width: 1920px; */
-  min-height: 100vh;
-  /* display: grid; */
-  place-items: center;
-  padding: 2rem;
-  font-family: "Poppins", system-ui;
-  background: rgb(67, 69, 112);
-  background: radial-gradient(
-    circle,
-    rgba(67, 69, 112, 1) 3%,
-    rgba(35, 36, 57, 1) 60%
-  );
-  color: #ffffff; /* Dark color */
-}
-
-.orb-canvas {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  pointer-events: none;
-  z-index: -1;
-}
-
-strong {
-  font-weight: 600;
-}
-
-.overlay{
-  display: flex;
-  width: 95%;
-  /* max-width: 1840px; */
-  max-height: 6640px;
-  height: fit-content;
-  padding: 12rem 8rem;
-  display: flex;
-  flex-direction: column  ;
-  margin-left: 5rem;
-  align-items: center;
-  background: rgba(32, 19, 72, 0.142);
-  /* filter: blur(6px); */
-  box-shadow: 0 0.75rem 2rem 0 rgba(0, 0, 0, 0.9);
-  border-radius: 2rem;
-}
-
-.overlay-1 {
-  display: flex;
-  flex-direction: row ;
-  /* border: 1px solid rgba(255, 255, 255, 0.125); */
-}
-
-.overlay__inner {
-  max-width: 36rem;
-}
-
-.overlay__title {
-  font-size: 3rem;
-  line-height: 3.5rem;
-  font-weight: 700;
-  letter-spacing: -0.025em;
-  margin-bottom: 2rem;
-}
-
-
-.body{
+  body {
+    /* max-width: 1920px; */
+    min-height: 100vh;
+    /* display: grid; */
+    place-items: center;
+    padding: 1rem;
+    font-family: "Poppins", system-ui;
     background: rgb(67, 69, 112);
-    background: radial-gradient(
-    circle,
-    rgba(67, 69, 112, 1) 3%,
-    rgba(35, 36, 57, 1) 60%
-  );
-}
+    background: radial-gradient(circle,
+        rgba(67, 69, 112, 1) 3%,
+        rgba(35, 36, 57, 1) 60%);
+    color: #ffffff;
+    /* Dark color */
+  }
+
+  .orb-canvas {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    z-index: -1;
+  }
+
+  strong {
+    font-weight: 600;
+  }
+
+  .overlay {
+    display: flex;
+    width: 95%;
+    /* max-width: 1840px; */
+    max-height: 6640px;
+    height: fit-content;
+    padding: 12rem 8rem;
+    display: flex;
+    flex-direction: column;
+    margin-left: 5rem;
+    align-items: center;
+    background: rgba(32, 19, 72, 0.142);
+    /* filter: blur(6px); */
+    box-shadow: 0 0.75rem 2rem 0 rgba(0, 0, 0, 0.9);
+    border-radius: 2rem;
+  }
+
+  .overlay-1 {
+    display: flex;
+    flex-direction: row;
+    /* border: 1px solid rgba(255, 255, 255, 0.125); */
+  }
+
+  .overlay__inner {
+    max-width: 36rem;
+  }
+
+  .overlay__title {
+    font-size: 3rem;
+    line-height: 3.5rem;
+    font-weight: 700;
+    letter-spacing: -0.025em;
+    margin-bottom: 2rem;
+  }
 
 
-.text-gradient {
-  background-image: linear-gradient(45deg, #b7b7b7 25%, #0a52da);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  -moz-background-clip: text;
-  -moz-text-fill-color: transparent;
-}
-
-.overlay__description {
-  font-size: 1rem;
-  line-height: 1.75rem;
-  margin-bottom: 3rem;
-}
-
-.overlay__btns {
-  width: 100%;
-  max-width: 30rem;
-  display: flex;
-}
-
-.overlay__btn {
-  width: 50%;
-  height: 2.5rem;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  font-size: 0.875rem;
-  font-weight: 600;
-  color: #f2f2f2;
-  background: #111; /* Dark color */
-  border: none;
-  border-radius: 0.5rem;
-  transition: transform 150ms ease;
-  outline-color: #0a52da;
-}
-
-.overlay__btn:hover {
-  cursor: pointer;
-}
-
-.overlay__btn--transparent {
-  background: transparent;
-  color: #111; /* Dark color */
-  border: 2px solid #111; /* Dark color */
-  border-width: 2px;
-  margin-right: 0.75rem;
-}
-
-.overlay__btn-emoji {
-  margin-left: 0.375rem;
-}
-
-a {
-  text-decoration: none;
-  color: #5c50a1; /* Dark color */
-  width: 100%;
-  height: 100%;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-}
-
-.homeimg{
-  /* float: right; */
-  margin-right: -3rem;
-  max-height: 400px;
-  /* max-width: 100px; */
-}
-
-.gradient-text {
-  font-family: "Tilt Neon", sans-serif;
-  background-image: linear-gradient(
-    90deg,
-    rgb(118, 167, 63) 0%,
-    rgb(51, 143, 118) 40%,
-    rgb(55, 141, 167) 50%,
-    rgb(117, 152, 242) 70%,
-    rgb(144, 118, 236) 100%
-  );
-  color: transparent;
-  background-size: contain;
-  background-clip: text;
-  -webkit-background-clip: text;
-}
-
-.cardss{
-  display: flex;
-  flex-direction: row;
-  margin-top: 200px;
-}
+  .body {
+    background: rgb(67, 69, 112);
+    background: radial-gradient(circle,
+        rgba(67, 69, 112, 1) 3%,
+        rgba(35, 36, 57, 1) 60%);
+  }
 
 
-.cardss {
+  .text-gradient {
+    background-image: linear-gradient(45deg, #b7b7b7 25%, #0a52da);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    -moz-background-clip: text;
+    -moz-text-fill-color: transparent;
+  }
+
+  .overlay__description {
+    font-size: 1rem;
+    line-height: 1.75rem;
+    margin-bottom: 3rem;
+  }
+
+  .overlay__btns {
+    width: 100%;
+    max-width: 30rem;
+    display: flex;
+  }
+
+  .overlay__btn {
+    width: 50%;
+    height: 2.5rem;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: #f2f2f2;
+    background: #111;
+    /* Dark color */
+    border: none;
+    border-radius: 0.5rem;
+    transition: transform 150ms ease;
+    outline-color: #0a52da;
+  }
+
+  .overlay__btn:hover {
+    cursor: pointer;
+  }
+
+  .overlay__btn--transparent {
+    background: transparent;
+    color: #111;
+    /* Dark color */
+    border: 2px solid #111;
+    /* Dark color */
+    border-width: 2px;
+    margin-right: 0.75rem;
+  }
+
+  .overlay__btn-emoji {
+    margin-left: 0.375rem;
+  }
+
+  a {
+    text-decoration: none;
+    color: #5c50a1;
+    /* Dark color */
+    width: 100%;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+
+  .homeimg {
+    /* float: right; */
+    margin-right: -3rem;
+    max-height: 400px;
+    /* max-width: 100px; */
+  }
+
+  .gradient-text {
+    font-family: "Tilt Neon", sans-serif;
+    background-image: linear-gradient(90deg,
+        rgb(118, 167, 63) 0%,
+        rgb(51, 143, 118) 40%,
+        rgb(55, 141, 167) 50%,
+        rgb(117, 152, 242) 70%,
+        rgb(144, 118, 236) 100%);
+    color: transparent;
+    background-size: contain;
+    background-clip: text;
+    -webkit-background-clip: text;
+  }
+
+  .cardss {
+    display: flex;
+    flex-direction: row;
+    margin-top: 200px;
+  }
+
+
+  .cardss {
     max-width: 100%;
 
     /* margin-left: 10%; */
@@ -193,44 +192,85 @@ a {
     position: relative;
     justify-content: space-evenly;
     gap: 20px;
-}
+  }
 
-.cardd {
+  .cardd {
     /* background-color: rgba(255, 255, 255, 0.0); */
     margin: 1rem;
     border-radius: 15px;
     text-align: center;
     padding: 20px;
     /* box-shadow: 0 8px 32px 0 rgba(11, 12, 34, 0.279); */
-    backdrop-filter: blur(10px); 
-    -webkit-backdrop-filter: blur(10px); 
-}
-.cardd p{
-  padding: 0.5rem 1rem;
-}
-.cardd_img {
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+  }
+
+  .cardd p {
+    padding: 0.5rem 1rem;
+  }
+
+  .cardd_img {
     width: 100%;
     border-radius: 10px;
     margin-bottom: 10px;
-}
+  }
 
-.main{
+  .main {
+    margin-top: 2rem;
     margin-left: 3rem;
     border-radius: 5rem;
     box-shadow: 0 0.75rem 2rem 0 rgba(0, 0, 0, 0.9);
     padding: 4rem;
-}
+  }
 
 
-@import url("https://fonts.googleapis.com/css2?family=Nunito:wght@300;400;500;600;700;800&family=Tilt+Neon&display=swap");
 
+  @media (max-width: 380px) {
+
+    body {
+      padding: 5px;
+    }
+
+    .main {
+      padding: 3rem 1rem 0rem 1rem;
+      margin-left: 0px;
+      margin-top: 30px;
+      border-radius: 10px;
+    }
+
+    .overlay-1 {
+      flex-direction: column;
+    }
+
+    .overlay-1 .right {
+      /* display: none; */
+      margin: 20px 0px 0px 10px;
+      width: 100%;
+    }
+
+    .homeimg {
+      height: auto;
+      width: 100%;
+    }
+
+    .overlay__description {
+      font-size: 1.5rem
+    }
+
+    .cardss {
+      flex-wrap: wrap
+    }
+  }
+
+
+  @import url("https://fonts.googleapis.com/css2?family=Nunito:wght@300;400;500;600;700;800&family=Tilt+Neon&display=swap");
 </style>
 <!-- Canvas -->
 
-<canvas class="orb-canvas"></canvas>  
+<canvas class="orb-canvas"></canvas>
 <!-- Overlay -->
-  <!-- Overlay inner wrapper -->
-   <div class="main">
+<!-- Overlay inner wrapper -->
+<div class="main">
   <div class="overlay-1">
   <div class="overlay__inner">
     <h1 class="overlay__title gradient-text">
@@ -244,46 +284,48 @@ a {
     <!-- Buttons -->
     <div class="overlay__btns">
 
-      <button class="overlay__btn overlay__btn--transparent">
-        <a href="{% url 'register' %}" target="_blank">
-          Start Tracking Now!
-        </a>
-      </button>
+        <button class="overlay__btn overlay__btn--transparent">
+          <a href="{% url 'register' %}" target="_blank">
+            Start Tracking Now!
+          </a>
+        </button>
 
-      <button class="overlay__btn overlay__btn--colors"><a href="{% url 'login' %}" target="_blank">
-          Look at Stats!
-      </a>
-      </button>
+        <button class="overlay__btn overlay__btn--colors"><a href="{% url 'login' %}" target="_blank">
+            Look at Stats!
+          </a>
+        </button>
+      </div>
     </div>
-  </div>
 
-  <div class="right">
-    <img class="homeimg" src="../static/images/home.png" alt="">
-  </div>
+    <div class="right">
+      <img class="homeimg" src="../static/images/home.png" alt="">
+    </div>
 
   </div>
 
   <div class="cardss">
     <div class="cardd">
-        <img class="cardd_img" src="../static/images/bills.jpg" alt="">
-        <h1>Scan Bills </h1>
-        <p>Introducing seamless transfer from bill images to transaction entries.</p>
+      <img class="cardd_img" src="../static/images/bills.jpg" alt="">
+      <h1>Scan Bills </h1>
+      <p>Introducing seamless transfer from bill images to transaction entries.</p>
     </div>
     <div class="cardd">
-        <img class="cardd_img" src="../static/images/recurring.jpg" alt="">
-        <h1>Bill Reminders</h1>
-        <p>Receive timely reminders for recurring bills and transactions</p>
+      <img class="cardd_img" src="../static/images/recurring.jpg" alt="">
+      <h1>Bill Reminders</h1>
+      <p>Receive timely reminders for recurring bills and transactions</p>
     </div>
     <div class="cardd">
-        <img class="cardd_img" src="../static/images/charts.jpg" alt="">
-        <h1> Alert Notifications</h1>
-        <p>Receive alerts when the budget limit for a category is exceeded</p>
+      <img class="cardd_img" src="../static/images/charts.jpg" alt="">
+      <h1> Alert Notifications</h1>
+      <p>Receive alerts when the budget limit for a category is exceeded</p>
     </div>
 
 
+  </div>
 </div>
-</div>
-{% endblock %}
 
+<span class="chaticon" style="position: sticky; bottom: 40px;">
+  <i class='fas fa-comments' style='font-size:48px;color:red'></i>
 
-
+  <span />
+  {% endblock %}
