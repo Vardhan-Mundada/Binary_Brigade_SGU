@@ -196,8 +196,8 @@ def add_to_db(processed_messages, request):
 
 def transfer_messages_from_firebase_to_db(request):
     user= UserProfile.objects.get(user=request.user)
-    mobile_number = "+91" + user.phone_no
-    # mobile_number = "+919999999999"
+    # mobile_number = "+91" + user.phone_no
+    mobile_number = "+919999999999"
     message_list = []
     try:
         messages = database.child("Users").child(mobile_number).child("messages").get().val()
