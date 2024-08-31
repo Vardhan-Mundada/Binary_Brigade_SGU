@@ -691,10 +691,13 @@ def notifications(request):
     notifications = []
 
     for category in categories:
+        print(category)
         total_expenses = Transaction.objects.filter(
             user=user,
             category=category
-        ).aggregate(total=Sum('amount'))['total'] or 0
+        ).aggregate(total=Sum('amount'))['total'] or 0 
+        
+        print(total_expenses)
 
         if total_expenses > category.budget_limit:
             notifications.append({
