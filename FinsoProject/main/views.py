@@ -583,7 +583,7 @@ def dashboard(request):
     # Calculate current value of mutual funds
     mutual_fund_values = []
     for mutual_fund in mutual_funds:
-        current_nav = 30
+        current_nav = get_nav_for_scheme(mutual_fund.name)
         current_value = float(current_nav) * float(mutual_fund.units_purchased)
         mutual_fund_values.append({
             'name': mutual_fund.name,
@@ -661,8 +661,10 @@ def chatbot(request):
             # Define response based on intent
             responses = {
                 'CategoryWiseExpenseTracking': get_category_response(preprocessed_input),
-                'GeneralExpenseTracking': get_category_response(preprocessed_input)
-                # Add other intents here
+                'IncomeManagement' : get_income_management_response(preprocessed_input,request),
+                'InvestmentTracking' : get_investment_tracking_response(preprocessed_input,request),
+                # 'AnalyticsAndGraphs' : get_analytics_response(preprocessed_input),
+                'BudgetManagement' : get_budget_management(preprocessed_input,request)
             }
             
             response_message = responses.get(intent, intent)
@@ -723,6 +725,91 @@ def get_category_response(preprocessed_input):
 
     return "Here’s a general breakdown of your expenses."
 
+
+def get_income_management_response(text, request):
+    # Get data from the Income model
+    incomes = Income.objects.filter(user=request.user)
+    total_income = incomes.aggregate(total_income=Sum('amount'))['total_income'] or 0
+    
+    # Create an HTML table
+    table_html = '<table border="1">'
+    table_html += '<tr><th>Source</th><th>Amount</th><th>Date</th></tr>'
+    
+    for income in incomes:
+        table_html += f'<tr><td>{income.source}</td><td>{income.amount}</td><td>{income.date}</td></tr>'
+    
+    table_html += '</table>'
+    table_html += f'<p><strong>Total Income: </strong>{total_income}</p>'
+    
+    return table_html   
+
+def get_investment_tracking_response(preprocessed_input, request):
+    # Get data from the investment models
+    stocks = Stock.objects.filter(user=request.user)
+    mutual_funds = MutualFund.objects.filter(user=request.user)
+    fixed_deposits = FixedDeposit.objects.filter(user=request.user)
+    
+    # Initialize total investment sum
+    total_investment = 0
+    
+    # Create an HTML table
+    table_html = '<table border="1">'
+    table_html += '<tr><th>Investment Type</th><th>Name</th><th>Amount</th><th>Date</th></tr>'
+    
+    # Add stocks to the table
+    for stock in stocks:
+        total_stock_value = stock.number_of_shares * stock.purchase_price_per_share
+        table_html += f'<tr><td>Stock</td><td>{stock.ticker_symbol}</td><td>{total_stock_value:.2f}</td><td>{stock.date_invested}</td></tr>'
+        total_investment += total_stock_value
+    
+    # Add mutual funds to the table
+    for fund in mutual_funds:
+        total_fund_value = fund.units_purchased * fund.nav_at_purchase
+        table_html += f'<tr><td>Mutual Fund</td><td>{fund.name}</td><td>{total_fund_value:.2f}</td><td>{fund.date_invested}</td></tr>'
+        total_investment += total_fund_value
+    
+    # Add fixed deposits to the table
+    for deposit in fixed_deposits:
+        table_html += f'<tr><td>Fixed Deposit</td><td>{deposit.bank_name}</td><td>{deposit.amount_invested:.2f}</td><td>{deposit.date_invested}</td></tr>'
+        total_investment += deposit.amount_invested
+    
+    table_html += '</table>'
+    table_html += f'<p><strong>Total Investment: </strong>{total_investment:.2f}</p>'
+    
+    return table_html
+
+
+from django.db.models import Sum
+from django.utils import timezone
+
+def get_budget_management(preprocessed_input, request):
+    # Get data from the ExpenseCategory model
+    categories = ExpenseCategory.objects.filter(user=request.user)
+    
+    # Initialize the HTML table
+    table_html = '<table border="1">'
+    table_html += '<tr><th>Category</th><th>Spending</th><th>Budget Limit</th><th>Status</th></tr>'
+    
+    for category in categories:
+        # Calculate total spending for each category
+        total_spending = Transaction.objects.filter(
+            user=request.user,
+            category=category,
+            type='expense'
+        ).aggregate(total_spent=Sum('amount'))['total_spent'] or 0
+        
+        # Determine if the category is over budget
+        if total_spending > category.budget_limit:
+            status = f'Over budget by {total_spending - category.budget_limit:.2f}'
+        else:
+            status = f'Within budget, {category.budget_limit - total_spending:.2f} left'
+        
+        # Add a row to the table for each category
+        table_html += f'<tr><td>{category.name}</td><td>{total_spending:.2f}</td><td>{category.budget_limit:.2f}</td><td>{status}</td></tr>'
+    
+    table_html += '</table>'
+    
+    return table_html
 
 
 
@@ -810,6 +897,18 @@ def get_transactions_by_category_and_days(category_name, days=30):
     return transactions
 
 
+def get_nav_for_scheme(scheme_name):
+    file_path = os.path.join(base_dir, 'main','mutual_funds.json') 
+    # Read the data from the JSON file
+    with open(file_path, 'r') as file:
+        data = json.load(file)
+    
+    # Find the NAV for the given scheme name
+    for item in data:
+        if item["Scheme_Name"] == scheme_name:
+            return item["Net_Asset_Value"]
+    
+    return None
 
 def get_nav_by_scheme_name(scheme_name):
     
@@ -904,7 +1003,11 @@ def add_mutual_fund(request):
     # api_response = requests.get(url, headers=headers, params=querystring).json()
 
     # funds = [scheme['Scheme_Name'] for scheme in api_response]
-    funds = []
+    fund_path = os.path.join(base_dir, 'main', 'mutual_funds.json')
+
+    with open(fund_path, 'r') as file:
+        data = json.load(file)
+    funds = [item["Scheme_Name"] for item in data]
     return render(request, 'add_mutual_fund.html', {'funds': funds})
 
 @login_required

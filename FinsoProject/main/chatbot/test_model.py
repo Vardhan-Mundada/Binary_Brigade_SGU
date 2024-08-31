@@ -4,13 +4,13 @@ import nltk
 from preprocess import preprocess_text
 model = joblib.load('chatbot_model.pkl')
 label_encoder = joblib.load('label_encoder.pkl')
-user_input = "How much have I spent this month on transport?"
+user_input = "Give me transactions of last 5 days spent on health."
 preprocessed_input = preprocess_text(user_input)
 prediction = model.predict([preprocessed_input])
 intent = label_encoder.inverse_transform(prediction)[0]
 print(intent)
 
-categories = ['entertainment', 'groceries', 'utilities', 'transportation', 'dining']
+categories = ['entertainment', 'groceries', 'utilities', 'transportation', 'food', 'education',"health"]
 preprocessed_categories = [preprocess_text(category) for category in categories]
 
 
