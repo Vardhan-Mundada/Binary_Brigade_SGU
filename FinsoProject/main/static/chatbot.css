@@ -7,13 +7,14 @@ html {
 	background: linear-gradient(to right, rgb(38, 51, 61), rgb(50, 55, 65), rgb(33, 33, 78));
 }
 
+
 .chat {
 	margin-top: auto;
 	margin-bottom: auto;
 }
 
 .card {
-	height: 1000px;
+	height: 600px;
 	border-radius: 15px !important;
 	background-color: rgba(0, 0, 0, 0.4) !important;
 }

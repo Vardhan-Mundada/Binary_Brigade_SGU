@@ -734,7 +734,7 @@ def chatbot(request):
                 'CategoryWiseExpenseTracking': get_category_response(preprocessed_input),
                 'IncomeManagement' : get_income_management_response(preprocessed_input,request),
                 'InvestmentTracking' : get_investment_tracking_response(preprocessed_input,request),
-                # 'AnalyticsAndGraphs' : get_analytics_response(preprocessed_input),
+                'AnalyticsAndGraphs' : get_analytics_response(preprocessed_input),
                 'BudgetManagement' : get_budget_management(preprocessed_input,request)
             }
             
@@ -747,6 +747,34 @@ def chatbot(request):
         return render(request, 'chatbot.html')
     else:
         return JsonResponse({'error': 'Invalid request method'}, status=405)
+
+def get_analytics_response(preprocessed_input):
+    # Assume you have a function that generates the graph URL based on the input
+  
+    
+    # Construct the HTML button with an href link to the graph URL
+    html_button = f"""
+    <div style="text-align: center; margin-top: 20px;">
+        <a href="/charts" target="_blank">
+            <button style="
+                background-color: #4CAF50;
+                color: white;
+                padding: 15px 32px;
+                text-align: center;
+                font-size: 16px;
+                border: none;
+                border-radius: 8px;
+                cursor: pointer;">
+                View Analytics Graph
+            </button>
+        </a>
+    </div>
+    """
+    
+    # Return the HTML button
+    return html_button
+
+
 
 def get_category_response(preprocessed_input):
     if "top 5" in preprocessed_input or "highest spending" in preprocessed_input or "rank" in preprocessed_input:

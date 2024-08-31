@@ -16,21 +16,43 @@
                 background-color: rgb(135, 189, 42);
             }
 
-            .msg_head .card {
-                height: 1000px;
-            }
+           
 
             .user_info span {
                 font-size: 40px;
             }
         }
+        .con{
+            max-height: 80vh;
+            max-width: 80vw;
+        }
+        ::-webkit-scrollbar-track {
+            background: #f1f1f1; /* Background color of the track */
+            width: 0px; /* Width of the scrollbar track */
+        }
+
+        /* Scrollbar Thumb */
+        ::-webkit-scrollbar-thumb {
+            background: #888; /* Color of the scrollbar thumb */
+            border-radius: 10px; /* Rounded corners for the scrollbar thumb */
+        }
+
+        /* Scrollbar Width */
+        ::-webkit-scrollbar {
+            width: 1px; /* Width of the scrollbar */
+        }
+
+        /* Hover effect */
+        ::-webkit-scrollbar-thumb:hover {
+            background: #555; /* Darker color when hovering */
+        }
     </style>
 </head>
 
 <body>
-    <div class="container-fluid h-100 w-100">
-        <div class="row justify-content-center h-100 w-100">
-            <div class="chat w-100">
+    <div class="container-fluid h-100">
+        <div class="row justify-content-center h-100">
+            <div class="col-md-8 col-xl-8 chat">
                 <div class="card">
                     <div class="card-header msg_head">
                         <div class="d-flex bd-highlight">
@@ -47,7 +69,7 @@
                     </div>
                     <div id="messageFormeight" class="card-body msg_card_body">
                     </div>
-                    <div class="card-footer msgbox">
+                    <div class="card-footer">
                         <form id="messageArea" class="input-group">
                             <input type="text" id="text" name="msg" placeholder="Type your message..."
                                 autocomplete="off" class="form-control type_msg" required />
