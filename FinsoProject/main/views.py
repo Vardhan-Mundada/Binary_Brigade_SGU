@@ -15,6 +15,7 @@ from django.http import JsonResponse
 from twilio.rest import Client
 from datetime import datetime, time
 from django.utils import timezone
+from django.contrib.auth.models import User, AnonymousUser
 from dotenv import load_dotenv
 load_dotenv()
 import os
@@ -42,6 +43,7 @@ config = {
 
 firebase = pyrebase.initialize_app(config)
 database = firebase.database()
+
 
 def determine_transaction_type(message):
     message_lower = message.lower()
@@ -95,55 +97,97 @@ def extract_numeric_value(message):
     return None
 
 
-def is_spam(message_content):
-    with open('tfidf_vectorizer.pkl', 'rb') as f:
-        vectorizer = pickle.load(f)
-    models = {
-        
-        'logistic_regression': 'logistic_regression_model.pkl',
-        'naive_bayes': 'naivebayes_model.pkl',
-        'random_forest': 'randomforest_model.pkl',
-    }
-    
-    loaded_models = {}
-    for name, file in models.items():
-        with open(file, 'rb') as f:
-            loaded_models[name] = pickle.load(f)
-    
-    message_vector = vectorizer.transform([message_content])
-    
-    for model_name, model in loaded_models.items():
-        prediction = model.predict(message_vector)
-        if prediction[0] == 1: 
-            return True
-    
-    return False
+import pickle
+from sklearn.feature_extraction.text import CountVectorizer
+from django.conf import settings
+import os
+ #Load the models and vectorizer
+base_dir = settings.BASE_DIR
+model_dir = os.path.join(base_dir, 'main')
 
+
+logistic_model = pickle.load(open(os.path.join(model_dir, "logistic_regression_model.pkl"), "rb"))
+naivebayes_model = pickle.load(open(os.path.join(model_dir, "naivebayes_model.pkl"), "rb"))
+randomforest_model = pickle.load(open(os.path.join(model_dir, "randomforest_model.pkl"), "rb"))
+vectorizer = pickle.load(open(os.path.join(model_dir, "vectorizer.pkl"), "rb"))
+def is_spam(message_content):
+    transformed_text = vectorizer.transform([message_content])
+
+    # Make predictions using the loaded models
+    prediction_logistic = logistic_model.predict(transformed_text)[0]
+    prediction_naivebayes = naivebayes_model.predict(transformed_text)[0]
+    prediction_randomforest = randomforest_model.predict(transformed_text)[0]
+
+    # If any model predicts spam (1), return True
+    if 1 in [prediction_logistic, prediction_naivebayes, prediction_randomforest]:
+        return True
+    else:
+        return False
 def list_of_message(message_list):
     processed_messages = []
-    spamList=["AJIOIN","ZEPTON","KHELMR",
-              "ARWGOV","EATSRE","NCDMAS",
-              "CRESCT","ATRLTV","SWIGGY",
-              "SMACAR","ECROMA"
-              ]
+    spamList = ["AJIOIN", "ZEPTON", "KHELMR",
+                "ARWGOV", "EATSRE", "NCDMAS",
+                "CRESCT", "ATRLTV", "SWIGGY",
+                "SMACAR", "ECROMA"
+               ]
     for message in message_list:
         parts = message.split(';')
         sender = parts[0].split(':')[1]
         time = parts[1][5:]
         message_content = parts[2].split(':')[1]
+        
         if sender[3:] in spamList:
             continue
-
+        
         # if is_spam(message_content):
         #     continue
+        
         if is_financial_message(message_content):
             transaction_type = determine_transaction_type(message_content)
             numeric_value = extract_numeric_value(message_content)
-            processed_messages.append([sender, time, message_content, transaction_type,numeric_value])
+            processed_messages.append([sender, time, message_content, transaction_type, (numeric_value)])
 
     return processed_messages
 
-def transfer_messages_from_firebase_to_db():
+
+from django.utils import timezone
+from .models import Transaction, ExpenseCategory
+from decimal import Decimal
+
+def add_to_db(processed_messages, request):
+    user = request.user
+    if isinstance(user, AnonymousUser):
+        print("User is not authenticated. Cannot add transactions.")
+        return
+    
+
+    for msg in processed_messages:
+        _, time_str, message_content, transaction_type, amount = msg
+
+        try:
+            # Convert amount to Decimal
+            amount = Decimal(str(amount))
+
+            # Parse the transaction date
+            transaction_date = timezone.datetime.strptime(time_str, "%Y-%m-%d %H:%M:%S")
+
+            # Create the transaction
+            new_transaction = Transaction.objects.create(
+                user=user,
+                amount=amount,
+                type=transaction_type,
+                notes=message_content,
+                category=ExpenseCategory.objects.get(id=5),
+                # transaction_date=transaction_date
+            )
+            print(f"Transaction added: {new_transaction}")
+        except Exception as e:
+            print(f"Error adding transaction: {str(e)}")
+
+    print("All transactions processed")
+
+
+def transfer_messages_from_firebase_to_db(request):
     mobile_number = "9999999999"
     message_list = []
     try:
@@ -159,9 +203,9 @@ def transfer_messages_from_firebase_to_db():
         print(f"An error occurred: {str(e)}")
     
     processed_messages = list_of_message(message_list)
+    add_to_db(processed_messages, request)
     # database.child("users").child(mobile_number).child("messages").remove()
     return processed_messages
-
 
 
 
@@ -244,8 +288,9 @@ def login(request):
             user = form.get_user()
             auth_login(request, user)
             messages.success(request, 'You are now logged in.')
-            list_of_msgs=transfer_messages_from_firebase_to_db()
+            list_of_msgs=transfer_messages_from_firebase_to_db(request)
             print(list_of_msgs)
+            add_to_db(list_of_msgs, request)
 
             return redirect('analytics')  
         else:
