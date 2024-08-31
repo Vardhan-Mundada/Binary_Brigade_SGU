@@ -16,6 +16,11 @@ from dotenv import load_dotenv
 load_dotenv()
 import os
 from .models import ExpenseCategory
+from .chatbot.preprocess import preprocess_text
+import json
+from django.http import JsonResponse
+from django.views.decorators.csrf import csrf_exempt
+import joblib
 
 # Create your views here.
 def home(request):
@@ -101,3 +106,48 @@ def login(request):
     else:
         form = AuthenticationForm()
     return render(request, 'login.html', {'form': form})
+
+@csrf_exempt
+def chatbot(request):
+    if request.method == 'POST':
+        try:
+            body = json.loads(request.body.decode('utf-8'))  # Decode and load the JSON
+            base_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+            model_path = os.path.join(base_dir, 'main', 'chatbot', 'chatbot_model.pkl')
+            label_encoder_path = os.path.join(base_dir, 'main', 'chatbot', 'label_encoder.pkl')
+            model = joblib.load(model_path)
+            label_encoder = joblib.load(label_encoder_path)
+            user_input = body.get('message', '')
+            preprocessed_input = preprocess_text(user_input)
+            prediction = model.predict([preprocessed_input])
+            intent = label_encoder.inverse_transform(prediction)[0]
+            
+            # Define response based on intent
+            responses = {
+                'CategoryWiseExpenseTracking': get_category_response(preprocessed_input),
+                'GeneralExpenseTracking': get_category_response(preprocessed_input)
+                # Add other intents here
+            }
+            
+            response_message = responses.get(intent, intent)
+            
+            return JsonResponse({'intent': intent, 'response': response_message})
+        except json.JSONDecodeError:
+            return JsonResponse({'error': 'Invalid JSON'}, status=400)
+    elif request.method == 'GET':
+        return render(request, 'chatbot.html')
+    else:
+        return JsonResponse({'error': 'Invalid request method'}, status=405)
+
+def get_category_response(preprocessed_input):
+    if "top 5" in preprocessed_input or "highest spending" in preprocessed_input or "rank" in preprocessed_input:
+        return "Here are the top 5 categories by spending: [Top categories details]"
+    
+    categories = ['entertainment', 'groceries', 'utilities', 'transportation', 'dining', 'food']
+    preprocessed_categories = [preprocess_text(category) for category in categories]
+    for category in preprocessed_categories:  
+        if category in preprocessed_input:
+            original_category = categories[preprocessed_categories.index(category)]
+            return f"Here’s the spending for {original_category}: [Specific category details]"
+    
+    return "Here’s a general breakdown of your expenses."

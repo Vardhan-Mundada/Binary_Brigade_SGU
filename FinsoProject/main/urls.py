@@ -9,5 +9,6 @@ urlpatterns=[
     path('logout/', views.logout, name='logout'),
     path('register/', views.register, name='register'),
     path('send-otp-email/', views.send_otp_email, name='send_otp_email'),
-    path('send-otp-mobile/', views.send_otp_mobile, name='send_otp_mobile')
+    path('send-otp-mobile/', views.send_otp_mobile, name='send_otp_mobile'),
+    path('chatbot/', views.chatbot, name='chatbot')
 ]

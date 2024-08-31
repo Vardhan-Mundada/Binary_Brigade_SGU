@@ -1,0 +1,18 @@
+{% extends 'base.html' %}
+
+{% block title %}Dashboard{% endblock %}
+
+{% block header %}
+    <div class="profile-info">
+        <img src="{{ profile.profile_image.url }}" alt="Profile Photo" class="profile-photo">
+        <h2>{{ profile.user.username }}</h2>
+    </div>
+{% endblock %}
+
+{% block content %}
+    <div class="financial-summary">
+        <p>Income this month: ${{ income_this_month }}</p>
+        <p>Expenses this month: ${{ expenses_this_month }}</p>
+        <p>Total Balance: ${{ profile.basic_income + income_this_month - expenses_this_month }}</p>
+    </div>
+{% endblock %}
