@@ -622,6 +622,27 @@ def export_report(request):
     df.to_csv(path_or_buf=response, index=False)
     
     return response
+def parse_time_period(preprocessed_input):
+    """ Parses the time period from the user input using regex. """
+    now = datetime.now()
+    
+    # Define regex patterns for various time periods
+    patterns = {
+        r'last 30 days': now - timedelta(days=30),
+        r'last month': now.replace(day=1) - timedelta(days=1),
+        r'this month': now.replace(day=1),
+        r'last 3 months': now - timedelta(days=90),
+        r'this year': now.replace(month=1, day=1),
+        r'last year': now.replace(year=now.year - 1, month=1, day=1),
+        r'past week': now - timedelta(days=7),
+    }
+    
+    for pattern, start_date in patterns.items():
+        if re.search(pattern, preprocessed_input, re.IGNORECASE):
+            return start_date
+    
+    # Default case if no pattern matched
+    return None
 @csrf_exempt
 def chatbot(request):
     if request.method == 'POST':
@@ -667,20 +688,39 @@ def get_category_response(preprocessed_input):
         if category in preprocessed_input:
             # Find the original category name
             original_category = categories[preprocessed_categories.index(category)]
-            
+            sd = parse_time_period(preprocessed_input)
+            if sd is not None:
+                days = timezone.now() - sd
+            else:
+                days = 30
             # Get transactions for the category and format them
-            transactions = get_transactions_by_category_and_days(original_category)
+            transactions = get_transactions_by_category_and_days(original_category,days)
             
             if transactions:
-                # Format transactions for display
-                transaction_details = "\n".join(
-                    [f"Transaction ID: {transaction.id}, Amount: {transaction.amount}, Date: {transaction.transaction_date}, Notes: {transaction.notes}"
+                # Format transactions for display as an HTML table
+                table_rows = "\n".join(
+                    [f"<tr><td>{transaction.id}</td><td>{transaction.amount}</td><td>{transaction.transaction_date.strftime('%Y-%m-%d')}</td><td>{transaction.notes}</td></tr>"
                      for transaction in transactions]
                 )
-                return f"Here are your transactions for the category '{original_category}':\n{transaction_details}"
+                table_html = f"""
+                <table border="1" cellpadding="5" cellspacing="0" style="width:100%; border-collapse: collapse;">
+                    <thead>
+                        <tr>
+                            <th>Transaction ID</th>
+                            <th>Amount</th>
+                            <th>Date</th>
+                            <th>Notes</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {table_rows}
+                    </tbody>
+                </table>
+                """
+                return f"Here are your transactions for the category '{original_category}' of past {days} :<br>{table_html}"
             else:
-                return f"No transactions found for the category '{original_category}'."
-    
+                return f"No transactions found for the category '{original_category}' in the specified time period."
+
     return "Here’s a general breakdown of your expenses."
 
 

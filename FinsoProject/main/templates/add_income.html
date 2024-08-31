@@ -1,8 +1,10 @@
 <!-- add_income.html -->
-<!DOCTYPE html>
-<html>
-<head>
-    <title>Add Income</title>
+{% extends 'base.html' %}
+
+{% block title %}Add Category{% endblock %}
+
+{% block content %}
+    
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -73,15 +75,18 @@
             background-color: #0ca90f;
         }
     </style>
-</head>
-<body>
+
+<div>
     
-    <h2>Add Income</h2>
+    <h2 style="color: white;">Add Income</h2>
+    <br>
+    <br>
+
     <form method="post">
         {% csrf_token %}
         {{ form.as_p }}
         <button type="submit">Add Income</button>
     </form>
     </div>
-</body>
-</html>
+</div>
+{% endblock %}
