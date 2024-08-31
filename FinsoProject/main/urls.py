@@ -36,6 +36,7 @@ urlpatterns=[
     path('transactions/', views.transactions_list, name='transactions_list'),
     path('charts/',views.charts_view,name="charts_view"),
     path('cashflow_minimizer/',views.minimize_cash_flow,name="minimize_cash_flow"),
+     path('load-more-transactions/', views.load_more_transactions, name='load_more_transactions'),
 
 
 ]
