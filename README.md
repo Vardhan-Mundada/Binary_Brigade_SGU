@@ -18,6 +18,50 @@ cd finsoproject
 pip install -r requirements.txt
 ```
 
+
+
+### Install pytesseract
+pytesseract is a Python wrapper for Google's Tesseract-OCR Engine. To use OCR functionalities, you need to install both pytesseract and Tesseract-OCR. Follow these steps:
+
+Install Tesseract-OCR:
+
+On Ubuntu:
+```bash
+sudo apt-get install tesseract-ocr
+```
+
+
+On macOS (using Homebrew):
+
+```bash
+brew install tesseract
+```
+
+
+
+On Windows:
+
+Download the installer from the Tesseract at UB Mannheim and follow the installation instructions.
+
+Install the pytesseract Python package:
+
+```bash
+pip install pytesseract
+```
+
+
+
+Configure pytesseract to use the Tesseract executable:
+
+You may need to set the TESSDATA_PREFIX environment variable or configure pytesseract to point to the Tesseract executable if it is not in your PATH.
+```
+python
+import pytesseract
+```
+
+# On Windows, you might need to specify the path to tesseract.exe
+pytesseract.pytesseract.tesseract_cmd = r'C:\Program Files\Tesseract-OCR\tesseract.exe'
+
 ### Setup and Configuration
 
 #### Database Configuration
