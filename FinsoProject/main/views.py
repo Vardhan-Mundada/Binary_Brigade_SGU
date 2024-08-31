@@ -1070,21 +1070,23 @@ from django.contrib.auth.decorators import login_required
 from .models import ExpenseCategory, Transaction
 from django.db.models import Sum
 
+from django.utils import timezone
+from django.db.models import Sum
+from .models import ExpenseCategory, Transaction, RecurringExpense
+
 @login_required
 def notifications(request):
     user = request.user
     categories = ExpenseCategory.objects.filter(user=user)
     notifications = []
 
+    # Check for budget overspend notifications
     for category in categories:
-        print(category)
         total_expenses = Transaction.objects.filter(
             user=user,
             category=category
-        ).aggregate(total=Sum('amount'))['total'] or 0 
+        ).aggregate(total=Sum('amount'))['total'] or 0
         
-        print(total_expenses)
-
         if total_expenses > category.budget_limit:
             notifications.append({
                 'category': category.name,
@@ -1093,8 +1095,21 @@ def notifications(request):
                 'overspend': total_expenses - category.budget_limit
             })
 
-    return render(request, 'notifications.html', {'notifications': notifications})
+    # Check for upcoming recurring bills
+    today = timezone.now().date()
+    tomorrow = today + timezone.timedelta(days=1)
 
+    recurring_bills = RecurringExpense.objects.filter(user=user, next_due_date__in=[today, tomorrow])
+
+    for bill in recurring_bills:
+        notifications.append({
+            'bill_name': bill.name,
+            'amount': bill.amount,
+            'due_date': bill.next_due_date,
+            'is_recurring': True
+        })
+
+    return render(request, 'notifications.html', {'notifications': notifications})
 
 
 def get_nav_by_scheme_name(scheme_name):

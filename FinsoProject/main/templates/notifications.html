@@ -10,17 +10,23 @@
                 <div class="col-md-4">
                     <div class="card mb-4 shadow-sm notification-box">
                         <div class="card-body">
-                            <h5 class="card-title">{{ notification.category }}</h5>
-                            <p class="card-text">Budget limit: <span class="text-muted">${{ notification.budget_limit|floatformat:2 }}</span></p>
-                            <p class="card-text">Current expenses: <span class="text-primary">${{ notification.current_expenses|floatformat:2 }}</span></p>
-                            <p class="card-text text-danger">Overspend: ${{ notification.overspend|floatformat:2 }}</p>
+                            {% if notification.is_recurring %}
+                                <h5 class="card-title">Upcoming Recurring Bill: {{ notification.bill_name }}</h5>
+                                <p class="card-text">Amount: <span class="text-primary">${{ notification.amount|floatformat:2 }}</span></p>
+                                <p class="card-text">Due Date: <span class="text-warning">{{ notification.due_date }}</span></p>
+                            {% else %}
+                                <h5 class="card-title">{{ notification.category }}</h5>
+                                <p class="card-text">Budget limit: <span class="text-muted">${{ notification.budget_limit|floatformat:2 }}</span></p>
+                                <p class="card-text">Current expenses: <span class="text-primary">${{ notification.current_expenses|floatformat:2 }}</span></p>
+                                <p class="card-text text-danger">Overspend: ${{ notification.overspend|floatformat:2 }}</p>
+                            {% endif %}
                         </div>
                     </div>
                 </div>
             {% endfor %}
         </div>
     {% else %}
-        <p class="alert alert-info text-center">No budget limits have been exceeded.</p>
+        <p class="alert alert-info text-center">No notifications available.</p>
     {% endif %}
 </div>
 {% endblock %}
