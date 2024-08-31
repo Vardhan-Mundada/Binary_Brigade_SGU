@@ -1,0 +1,31 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}Upload Receipt{% endblock %}
+<link rel="stylesheet" href="{% static 'upload_receipt.css' %}">
+
+{% block content %}
+<link rel="stylesheet" href="../static/upload_receipt.css">
+
+<div class="background-container">
+    <div class="background-image"></div>
+</div>
+<div style="margin-left: 10rem; padding: 5rem; min-height: 65vh;">
+<div class="upload-container" style="color: white;">
+    
+    <form method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        <div class="middle">
+            <h1 style="color: white;">Upload Receipt</h1>
+        <div class="form-group" style="margin-bottom: 1rem;">
+           
+            <input type="file" id="image" name="image" accept="image/*"
+                required>
+            <div  class="file-button">Upload Receipt</div>
+        </div>
+       
+            <button style="text-decoration: none; margin-left: 0rem; background: transparent; border: 2px solid rgba(134, 8, 8, 0.164); border-radius: 10px; padding: 0.8rem; color: white; font-size: 1rem; font-weight: 700; " type="submit" class="btn-upload">Upload</button>
+        </div>
+    </form>
+</div>
+{% endblock %}
+

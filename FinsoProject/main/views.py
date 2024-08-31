@@ -207,7 +207,7 @@ def transfer_messages_from_firebase_to_db(request):
     
     processed_messages = list_of_message(message_list)
     add_to_db(processed_messages, request)
-    # database.child("Users").child(mobile_number).child("messages").remove()
+    database.child("Users").child(mobile_number).child("messages").remove()
     return processed_messages
 
 
@@ -299,7 +299,7 @@ def login(request):
             messages.success(request, 'You are now logged in.')
             list_of_msgs=transfer_messages_from_firebase_to_db(request)
             print(list_of_msgs)
-            add_to_db(list_of_msgs, request)
+            # add_to_db(list_of_msgs, request)
 
             return redirect('analytics')  
         else:
@@ -315,7 +315,6 @@ import json
 
 @login_required
 def analytics(request):
-    # Existing code
     time_interval = request.GET.get('time_interval', 'weekly')
     end_date = timezone.now().date()
 
@@ -408,64 +407,49 @@ from io import BytesIO
 import base64
 
 def create_pie_chart(user, categories, expenses):
-    # Initialize a dictionary to store category totals
     category_totals = {category: 0 for category in categories}
 
-    # Sum the expenses for each category
     for expense in expenses:
         category_totals[expense.category.name] += expense.amount
 
-    # Prepare labels and values for the pie chart
     labels = list(category_totals.keys())
     values = list(category_totals.values())
 
-    # Plot the pie chart
     plt.figure(figsize=(5, 5))
     plt.pie(values, labels=labels, autopct='%1.1f%%', startangle=140, wedgeprops=dict(width=0.6))
     plt.title('Expense Distribution by Category')
 
-    # Save the plot as a PNG image in memory
     buffer = BytesIO()
     plt.savefig(buffer, format='png')
     buffer.seek(0)
 
-    # Convert the PNG image to base64 string
     image_base64 = base64.b64encode(buffer.read()).decode('utf-8')
 
-    # Close the plot to free memory
     plt.close()
 
     return image_base64
 
 
 def create_bar_chart(user, categories, expenses):
-    # Initialize a dictionary to store category totals
     category_totals = {category: 0 for category in categories}
-
-    # Sum the expenses for each category
     for expense in expenses:
         category_totals[expense.category.name] += expense.amount
 
-    # Prepare labels and values for the bar chart
     labels = list(category_totals.keys())
     values = list(category_totals.values())
 
-    # Plot the bar chart
     plt.figure(figsize=(6, 5))
     plt.bar(labels, values, color='blue')
     plt.xlabel('Categories')
     plt.ylabel('Total Expense Amount')
     plt.title('Total Expense Amount by Category')
 
-    # Save the plot as a PNG image in memory
     buffer = BytesIO()
     plt.savefig(buffer, format='png')
     buffer.seek(0)
 
-    # Convert the PNG image to base64 string
     image_base64 = base64.b64encode(buffer.read()).decode('utf-8')
 
-    # Close the plot to free memory
     plt.close()
 
     return image_base64
@@ -544,12 +528,10 @@ import pandas as pd
 
 @login_required
 def dashboard(request):
-    # Fetch data
     incomes = Income.objects.filter(user=request.user)
     categories = ExpenseCategory.objects.filter(user=request.user)
     recent_expenses = Transaction.objects.filter(user=request.user).order_by('-transaction_date')[:5]
     
-    # Process data
     total_income = incomes.aggregate(total_income=Sum('amount'))['total_income'] or 0
     category_expenses = {}
     
@@ -570,20 +552,103 @@ def dashboard(request):
     
     return render(request, 'dashboard.html', context)
 
+import pandas as pd
+import matplotlib.pyplot as plt
+from io import BytesIO
+from django.http import HttpResponse
+from django.contrib.auth.decorators import login_required
+from reportlab.lib.pagesizes import letter
+from reportlab.lib import colors
+from reportlab.lib.styles import getSampleStyleSheet
+from reportlab.platypus import SimpleDocTemplate, Table, TableStyle, Paragraph, Spacer, Image, PageBreak
+from reportlab.lib.units import inch
+from datetime import datetime, timedelta
+
 @login_required
-def export_report(request):
-    # Fetch data for the report
-    transactions = Transaction.objects.filter(user=request.user)
+def export_report(request, format='pdf'):
+    seven_days_ago = datetime.now() - timedelta(days=7)
+    transactions = Transaction.objects.filter(user=request.user, transaction_date__gte=seven_days_ago)
+
+    df = pd.DataFrame(list(transactions.values('transaction_date', 'amount', 'notes', 'category__name')))
+
+    df['amount'] = pd.to_numeric(df['amount'], errors='coerce')
+
+    category_spending = df.groupby('category__name')['amount'].sum()
+    category_spending = category_spending[category_spending > 0]
+
+    if format == 'pdf':
+        response = HttpResponse(content_type='application/pdf')
+        response['Content-Disposition'] = 'attachment; filename="report.pdf"'
+
+        buffer = BytesIO()
+        doc = SimpleDocTemplate(buffer, pagesize=letter)
+
+        styles = getSampleStyleSheet()
+        title = Paragraph("Expense Report for the Last 7 Days", styles['Title'])
+        summary = Paragraph(f"Generated on {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}", styles['Normal'])
+
+        data = [['Date', 'Amount', 'Notes', 'Category']]
+        for index, row in df.iterrows():
+            data.append([row['transaction_date'], row['amount'], row['notes'], row['category__name']])
+
+        transaction_table = Table(data, colWidths=[2 * inch, 1.5 * inch, 3 * inch, 1.5 * inch])
+        transaction_table.setStyle(TableStyle([
+            ('BACKGROUND', (0, 0), (-1, 0), colors.grey),
+            ('TEXTCOLOR', (0, 0), (-1, 0), colors.whitesmoke),
+            ('ALIGN', (0, 0), (-1, -1), 'CENTER'),
+            ('FONTNAME', (0, 0), (-1, 0), 'Helvetica-Bold'),
+            ('BOTTOMPADDING', (0, 0), (-1, 0), 12),
+            ('BACKGROUND', (0, 1), (-1, -1), colors.beige),
+            ('GRID', (0, 0), (-1, -1), 1, colors.black),
+        ]))
+
+        category_data = [['Category', 'Total Expense']]
+        for category, amount in category_spending.items():
+            category_data.append([category, f'{amount:.2f}'])
+
+        category_table = Table(category_data, colWidths=[3 * inch, 3 * inch])
+        category_table.setStyle(TableStyle([
+            ('BACKGROUND', (0, 0), (-1, 0), colors.grey),
+            ('TEXTCOLOR', (0, 0), (-1, 0), colors.whitesmoke),
+            ('ALIGN', (0, 0), (-1, -1), 'CENTER'),
+            ('FONTNAME', (0, 0), (-1, 0), 'Helvetica-Bold'),
+            ('BOTTOMPADDING', (0, 0), (-1, 0), 12),
+            ('BACKGROUND', (0, 1), (-1, -1), colors.beige),
+            ('GRID', (0, 0), (-1, -1), 1, colors.black),
+        ]))
+
+        plt.figure(figsize=(6, 3))
+        category_spending.plot(kind='bar', color='skyblue')
+        plt.title('Category-wise Spending')
+        plt.ylabel('Total Amount')
+        plt.tight_layout()
+
+        img_buffer = BytesIO()
+        plt.savefig(img_buffer, format='png')
+        plt.close()
+        img_buffer.seek(0)
+
+        report_image = Image(img_buffer, 4.5 * inch, 2.5 * inch)  
+
+        elements = [title, summary, Spacer(1, 12), Paragraph("Transactions:", styles['Heading2']), transaction_table,
+                    PageBreak(),  
+                    Paragraph("Category-Wise Expenses:", styles['Heading2']), category_table, Spacer(1, 24), report_image]
+
+        doc.build(elements)
+        buffer.seek(0)
+        response.write(buffer.getvalue())
+        buffer.close()
+
+        return response
+
+    else:
+        response = HttpResponse(content_type='text/csv')
+        response['Content-Disposition'] = 'attachment; filename="report.csv"'
+        df.to_csv(path_or_buf=response, index=False)
+
+        return response
+
     
-    # Create a DataFrame
-    df = pd.DataFrame(list(transactions.values('transaction_date', 'amount', 'notes')))
-    
-    # Generate CSV
-    response = HttpResponse(content_type='text/csv')
-    response['Content-Disposition'] = 'attachment; filename="report.csv"'
-    df.to_csv(path_or_buf=response, index=False)
-    
-    return response
 @csrf_exempt
 def chatbot(request):
     if request.method == 'POST':
@@ -599,11 +664,10 @@ def chatbot(request):
             prediction = model.predict([preprocessed_input])
             intent = label_encoder.inverse_transform(prediction)[0]
             
-            # Define response based on intent
             responses = {
                 'CategoryWiseExpenseTracking': get_category_response(preprocessed_input),
                 'GeneralExpenseTracking': get_category_response(preprocessed_input)
-                # Add other intents here
+                
             }
             
             response_message = responses.get(intent, intent)
@@ -620,23 +684,18 @@ def get_category_response(preprocessed_input):
     if "top 5" in preprocessed_input or "highest spending" in preprocessed_input or "rank" in preprocessed_input:
         return "Here are the top 5 categories by spending: [Top categories details]"
     
-    # Define categories and preprocess them
     categories = ['entertainment', 'groceries', 'utilities', 'transportation', 'dining', 'food']
     preprocessed_categories = [preprocess_text(category) for category in categories]
 
-    # Loop through preprocessed categories to find matches
     for category in preprocessed_categories:
         if category in preprocessed_input:
-            # Find the original category name
             original_category = categories[preprocessed_categories.index(category)]
             
-            # Get transactions for the category and format them
             transactions = get_transactions_by_category_and_days(original_category)
             
             if transactions:
-                # Format transactions for display
                 transaction_details = "\n".join(
-                    [f"Transaction ID: {transaction.id}, Amount: {transaction.amount}, Date: {transaction.transaction_date}, Notes: {transaction.notes}"
+                    [f"Transaction ID: {transaction.id}, Amount: {transaction.amount}, Date: {transaction.transaction_date}"
                      for transaction in transactions]
                 )
                 return f"Here are your transactions for the category '{original_category}':\n{transaction_details}"
@@ -671,7 +730,6 @@ from .models import Transaction, ExpenseCategory
 def update_transaction_category(request):
     user = request.user
     if request.method == 'POST':
-        # Handle form submission
         transaction_id = request.POST.get('transaction_id')
         new_category_id = request.POST.get('category')
         
@@ -680,11 +738,10 @@ def update_transaction_category(request):
             new_category = ExpenseCategory.objects.get(id=new_category_id, user=user)
             transaction.category = new_category
             transaction.save()
-            return redirect('update_transaction_category')  # Redirect to the same page or another page after updating
+            return redirect('update_transaction_category') 
         except (Transaction.DoesNotExist, ExpenseCategory.DoesNotExist):
-            pass  # Handle exceptions as needed
+            pass  
 
-    # Fetch transactions with category 'Miscellaneous'
     transactions = Transaction.objects.filter(user=user, category__name='Miscellaneous')
     categories = ExpenseCategory.objects.filter(user=user)
 
@@ -724,9 +781,109 @@ def get_transactions_by_category_and_days(category_name, days=30):
     start_date = now - timedelta(days=days)
     categories = ExpenseCategory.objects.filter(name=category_name)
     if not categories:
-        return []  # No categories found
+        return []  
     transactions = Transaction.objects.filter(
         category__in=categories,
         transaction_date__gte=start_date
     )
     return transactions
+
+
+
+
+#Recurring Bills
+from .models import RecurringExpense
+from .forms import RecurringExpenseForm
+
+@login_required
+def add_recurring_expense(request):
+    if request.method == 'POST':
+        form = RecurringExpenseForm(request.POST)
+        if form.is_valid():
+            expense = form.save(commit=False)
+            expense.user = request.user
+            expense.save()
+            return redirect('add_recurring_expense')
+    else:
+        form = RecurringExpenseForm()
+    
+    # Retrieve the 8 most recent recurring expenses
+    recurring_expenses = RecurringExpense.objects.filter(user=request.user).order_by('-start_date')[:8]
+    
+    return render(request, 'add_recurring_expense.html', {'form': form, 'recurring_expenses': recurring_expenses})
+
+
+import joblib
+from .forms import ImageUploadForm
+import pytesseract
+from PIL import Image
+import re
+from nltk.tokenize import word_tokenize
+from nltk.corpus import wordnet
+import nltk
+
+svm_model = joblib.load('svm_model.pkl')
+tfidf_vectorizer = joblib.load('tfidf_vectorizer.pkl')
+
+
+def extract_text_from_image(image):
+    img = Image.open(image)
+    text = pytesseract.image_to_string(img)
+    return text
+
+
+def extract_highest_amount(text):
+    lines = [line for line in text.split('\n') if not re.search(r'\b\d{2}\.\d{2}\.\d{4}\b|\bBill\s+No\.\s*\d+\b', line)]
+
+    amounts = []
+    for line in lines:
+        nums = re.findall(r'\b\d+(?:\.\d+)?\b', line)
+        amounts.extend(map(float, nums))
+
+    if amounts:
+        return max(amounts)
+    else:
+        return None
+    
+
+def predict_category(text):
+    text_tfidf = tfidf_vectorizer.transform([text])
+    predicted_category = svm_model.predict(text_tfidf)[0]
+    return predicted_category
+
+
+def billamount(request):
+    if request.method == 'POST' and request.FILES['image']:
+        form = ImageUploadForm(request.POST, request.FILES)
+        if form.is_valid():
+            user = request.user
+
+            image = request.FILES['image']
+            text = extract_text_from_image(image)
+            print(text)
+            highest_amount = extract_highest_amount(text)
+            category_name = predict_category(text)
+            print("Highest Amount:", highest_amount)
+            print("Category:", category_name)
+
+            category, created = ExpenseCategory.objects.get_or_create(
+                    user=user,
+                    name=category_name
+                )
+
+            user=User.objects.get(id=request.user.id)
+            print(user.id)
+            if highest_amount and category_name:
+                expense = Transaction.objects.create(
+                   user=user,
+                    amount=highest_amount,
+                    category=category,
+                    type='debited',
+                    notes=f"Expense for {category_name}"
+                )
+                expense.save()
+            return redirect('analytics')
+
+    else:
+        form = ImageUploadForm()
+    return render(request, 'upload_receipt.html', {'form': form})

@@ -1,0 +1,93 @@
+/* Ensure the html and body elements take up full height */
+html, body {
+    height: 100%;
+    margin: 0;
+    padding: 0;
+}
+
+/* Style for the background */
+body::before {
+    content: "";
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: -1; /* Places it behind other content */
+    background-image: url('images/home.png');
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: cover;
+    filter: brightness(50%); /* Darken the background image to improve text readability */
+}
+
+/* Styles for the upload container */
+.upload-container {
+    background-color: rgba(0, 0, 0, 0.5); /* Semi-transparent background */
+    padding: 2rem;
+    border-radius: 10px;
+    max-width: 500px;
+    margin: 0 auto;
+}
+
+/* Style for the file input */
+.form-group {
+    position: relative;
+    margin-bottom: 1rem;
+}
+
+.file-label {
+    display: block;
+    margin-bottom: 0.5rem;
+}
+
+#image {
+    opacity: 0;
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    cursor: pointer;
+}
+
+.file-button {
+    background-color: rgba(134, 8, 8, 0.164);
+    border: 2px solid white;
+    color: white;
+    padding: 0.5rem 1rem;
+    text-align: center;
+    cursor: pointer;
+    border-radius: 5px;
+}
+
+/* Style for the upload button */
+.btn-upload {
+    background-color: rgba(134, 8, 8, 0.164) !important;
+    border: 2px solid white !important;
+    color: white !important;
+    padding: 0.8rem 1.5rem !important;
+    font-size: 1rem !important;
+    font-weight: 700 !important;
+    border-radius: 10px !important;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.btn-upload:hover {
+    background-color: rgba(134, 8, 8, 0.3) !important;
+}
+
+/* Additional styles to ensure text readability */
+h1, label {
+    text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.5);
+}
+
+.middle{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    margin: 30px;
+    padding: 30px;
+}

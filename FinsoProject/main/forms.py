@@ -1,7 +1,7 @@
 from django import forms
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import User
-from .models import UserProfile, Income, Transaction, ExpenseCategory
+from .models import UserProfile, Income, Transaction, ExpenseCategory, RecurringExpense
 
 class UserRegistrationForm(UserCreationForm):
     phone_no = forms.CharField(max_length=15)
@@ -57,3 +57,12 @@ class CategoryForm(forms.ModelForm):
     class Meta:
         model = ExpenseCategory
         fields = ['name', 'budget_limit']
+
+
+class RecurringExpenseForm(forms.ModelForm):
+    class Meta:
+        model = RecurringExpense
+        fields = ['name', 'amount', 'frequency', 'start_date', 'next_due_date']
+
+class ImageUploadForm(forms.Form):
+    image = forms.ImageField()

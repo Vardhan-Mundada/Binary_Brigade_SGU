@@ -1,0 +1,108 @@
+/* recurring_exp.css */
+
+/* Global Styles */
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f0f0f0;
+    margin: 0;
+    padding: 0;
+  }
+  
+  .container {
+    max-width: 1200px; /* Adjust as needed */
+    margin: 20px auto;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+  }
+  
+  .form-container {
+    padding: 20px;
+    background-color: #fff;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(59, 78, 205, 0.1);
+  }
+  
+  .form-container h1 {
+    margin-top: 0;
+    margin-bottom: 20px;
+    color: #333;
+    font-size: 24px;
+    text-align: center;
+  }
+  
+  .form-container form {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 15px;
+  }
+  
+  .form-container label {
+    font-weight: bold;
+    display: block;
+  }
+  
+  .form-container input[type="text"],
+  .form-container input[type="number"],
+  .form-container textarea,
+  .form-container select {
+    width: calc(100% - 20px); /* Reduced input width */
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    box-sizing: border-box;
+    transition: all 0.3s ease;
+  }
+  
+  .form-container input[type="text"]:hover,
+  .form-container input[type="number"]:hover,
+  .form-container textarea:hover,
+  .form-container select:hover {
+    transform: scale(1.05);
+    border-color: #4caf50;
+  }
+  
+  .form-container button[type="submit"] {
+    background-color: #4caf50;
+    color: #fff;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 16px;
+    width: calc(100% - 20px); /* Reduced button width */
+    transition: all 0.3s ease;
+  }
+  
+  .form-container button[type="submit"]:hover {
+    background-color: #45a049;
+    transform: translateY(-3px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  }
+  
+  .cards-container {
+    display: flex;
+    flex-direction: row-reverse;
+    flex-wrap: wrap;
+    justify-content: space-between; 
+  }
+  
+  
+  .card {
+    background-color: #fff;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    margin-top: 1rem;
+  
+    height: fit-content;
+  }
+  
+  .card h2 {
+    color: #333;
+    margin-top: 0;
+  }
+  
+  .card p {
+    color: #666;
+  }

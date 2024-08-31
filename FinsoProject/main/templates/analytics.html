@@ -15,7 +15,7 @@
     .main-container {
         padding: 1rem;
         margin-left: 3rem;
-        border-radius: 5rem;
+        border-radius: 1rem;
         box-shadow: 0 0.75rem 2rem 0 rgba(0, 0, 0, 0.9);
     }
     .card{
@@ -42,7 +42,7 @@
         flex-wrap: wrap;
     }
     .parent {
-        max-width: 45vw;
+        min-width: 50vw;
         display: flex;
         flex-direction: row;
         flex-wrap: wrap;
@@ -60,7 +60,59 @@
     .category_t{
         margin-top: 2rem;
         font-weight: 600;
+
     }
+    .right-container{
+        margin-left: 10rem;
+        margin-top: -5rem;
+    }
+    @media screen and (max-width:600px) {
+        .flex-container{
+            flex-direction: column;
+        }
+        #income-bar-chart{
+            width: 400px;
+            height: 400px;
+        }
+        .left-container{
+            margin-left: 2rem;
+        }
+        .income{
+            display: none;
+        }
+        .chart-container{
+            margin-top: 2rem;
+            min-width: 69vw;
+            text-align: center;
+        }
+        .chara{
+            width: 70vw;
+            margin-left: -2rem;
+        }
+        .main-container{
+            margin-left: 1rem;
+        }
+        .right-container{
+            margin-left: 1rem;
+            text-align: center;
+        }
+        .Expense{
+            margin-left: 1rem;
+            padding-top: 2rem;
+        }
+    }
+    #income-bar-chart{
+        
+        width: 400px;
+        height: 400px;
+    }
+    .main-container{
+        max-width: 93vw;
+    }
+    
+
+
+    
 </style>
 
 <div class="main-container">
@@ -93,7 +145,7 @@
                     <div class="stat card income">
                         <div class="card-content">
                             <h3 style="font-weight: 700;">Income Sources</h3>
-                            <canvas id="income-bar-chart" width="400" height="400"></canvas> 
+                            <canvas id="income-bar-chart" width="400px" height="400px"></canvas> 
                         </div>
                     </div> 
 
@@ -101,7 +153,7 @@
                         <div class="card-content" style="display: flex; flex-direction: column; align-items: center;">
                             <div style="display: block; margin-top: 1rem;">
                                 <h3 style="font-weight: 1000; line-height: 1.5rem;">Available Balance </h3>
-                                <p style="margin: 1rem auto;">{{ total_expenses }}</p>
+                                <p style="margin: 1rem auto;">{{ remaining_amount }}</p>
                             </div>
                             <img src="{% static 'images/bank-account.png' %}" style="height: 60%; width: 60%; padding-left: 1rem;" alt="">
                         </div>
@@ -124,14 +176,13 @@
                     <button onclick="showPieChart()" style="background: transparent; border: 2px solid rgba(255, 255, 255, 0.164); border-radius: 10px; padding: 0.8rem; color: white; font-size: 1rem; font-weight: 700;">Show Pie Chart</button>
                     <button onclick="showBarChart()" style="background: transparent; border: 2px solid rgba(255, 255, 255, 0.167); border-radius: 10px; padding: 0.8rem; color: white; font-size: 1rem; font-weight: 700;">Show Bar Chart</button>
                 </div>
-                <div style="background: rgba(0, 0, 0, 0.052); padding: 2rem; border-radius: 2rem; box-shadow: 0 0.25rem 2rem 0 rgba(0, 0, 0, 0.505);">
-                    <img style="border-radius: 2rem;" id="pie-chart" src="data:image/png;base64,{{ pie_chart }}" alt="Pie Chart">
-                    <img style="margin-left: -2rem; border-radius: 2rem;" id="bar-chart" src="data:image/png;base64,{{ bar_chart }}" alt="Bar Chart" style="display: none;">
+                <div  style="background: rgba(0, 0, 0, 0.052); border-radius: 2rem; box-shadow: 0 0.25rem 2rem 0 rgba(0, 0, 0, 0.096);">
+                    <img class="chara"  style="border-radius: 2rem;" id="pie-chart" src="data:image/png;base64,{{ pie_chart }}" alt="Pie Chart">
+                    <img class="chara"  style="margin-left: -0rem; border-radius: 2rem;" id="bar-chart" src="data:image/png;base64,{{ bar_chart }}" alt="Bar Chart" style="display: none;">
                 </div>
             </div>
         </div>
-
-        <div class="right-container recent-expenses" style="margin-left: 10rem; margin-top: -5rem;">
+        <div class="right-container recent-expenses">
             <div class="category-expenses">
                 <h2 class="category_t" style="color: white; font-weight: 750;">Category-wise Total Expenses</h2>
                 <div style="display: flex; flex-direction: column; align-items: flex-start;">
@@ -146,7 +197,7 @@
                     {% endfor %}
                 </div>
             </div>
-            <h2 style="font-weight: 700; font-family: 'Poppins'; color: white;">Recent Expenses</h2>
+            <h2 class="Expense" style="font-weight: 700; font-family: 'Poppins'; color: white;">Recent Expenses</h2>
             <div class="card-container" style="margin-bottom: 5rem;">
                 {% for expense in recent_expenses %}
                     <div class="card">

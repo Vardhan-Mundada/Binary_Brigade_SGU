@@ -153,10 +153,14 @@
             {% endfor %}
         </div>
 
-        <!-- Export Report Button -->
-        <div class="card">
-            <button class="button export-button">Export Report</button>
-        </div>
+        
+        <form action="{% url 'export_report' 'csv' %}" method="get">
+            <button type="submit">Download CSV</button>
+        </form>
+        <form action="{% url 'export_report' 'pdf' %}" method="get">
+            <button type="submit">Download PDF</button>
+        </form>
+
     </div>
 
     <script>

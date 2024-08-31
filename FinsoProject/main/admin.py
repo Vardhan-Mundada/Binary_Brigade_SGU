@@ -17,3 +17,7 @@ admin.site.register(User, UserAdmin)
 @admin.register(ExpenseCategory)
 class ExpenseCategoryAdmin(admin.ModelAdmin):
     list_display = ('user', 'name', 'created_date')
+
+@admin.register(UserProfile)
+class UserProfile(admin.ModelAdmin):
+    list_display = ('user', 'phone_no', 'address', 'state', 'zip_code', 'profile_image', 'basic_income', 'created_date')
