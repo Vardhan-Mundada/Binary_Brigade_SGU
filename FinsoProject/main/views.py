@@ -180,7 +180,6 @@ def create_default_categories(user):
     default_categories = [
         'Food',
         'Transportation',
-        'Utilities',
         'Entertainment',
         'Health',
         'Miscellaneous',
@@ -324,7 +323,13 @@ def analytics(request):
         'sources': [source['source'] for source in income_sources],
         'amounts': [source['total_income'] for source in income_sources]
     }
-
+    predefined_categories = [
+        {'name': 'Food', 'icon': 'icons/food.png'},
+        {'name': 'Transportation', 'icon': 'icons/transportation.png'},
+        {'name': 'Entertainment', 'icon': 'icons/entertainment.png'},
+        {'name': 'Health', 'icon': 'icons/health.png'},
+        {'name': 'Miscellaneous', 'icon': 'icons/miscellaneous.png'}
+    ]
     context = {
         'time_interval': time_interval,
         'categories': categories,
@@ -336,6 +341,8 @@ def analytics(request):
         'remaining_amount': remaining_amount,
         'recent_expenses': recent_expenses,
         'category_totals': category_totals,
+        'expense_sources_data': json.dumps(expense_sources_data, cls=DjangoJSONEncoder),
+        'predefined_categories': predefined_categories,
     }
 
     return render(request, 'analytics.html', context)

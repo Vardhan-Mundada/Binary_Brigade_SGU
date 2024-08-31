@@ -53,7 +53,13 @@
         min-width:  44%;
     }
     .balance{
-        background-color: orange;
+        background: linear-gradient(110.1deg, rgb(241, 115, 30) 18.9%, rgb(231, 29, 54) 90.7%);
+        justify-content: center;
+        text-align: center;
+    }
+    .category_t{
+        margin-top: 2rem;
+        font-weight: 600;
     }
 </style>
 
@@ -93,27 +99,18 @@
 
                     <div class="stat card balance">
                         <div class="card-content" style="display: flex; flex-direction: column; align-items: center;">
-                            <div style="display: block;">
-                                <p style="font-weight: 700;">Available Balance </p>
-                                <p>{{ total_expenses }}</p>
+                            <div style="display: block; margin-top: 1rem;">
+                                <h3 style="font-weight: 1000; line-height: 1.5rem;">Available Balance </h3>
+                                <p style="margin: 1rem auto;">{{ total_expenses }}</p>
                             </div>
-                            <img src="{% static 'images/stat_png.png' %}" style="height: 60%; width: 60%; padding-left: 1rem;" alt="">
+                            <img src="{% static 'images/bank-account.png' %}" style="height: 60%; width: 60%; padding-left: 1rem;" alt="">
                         </div>
                     </div>
                     
                                        
                 </div>
             </div>
-            <div class="caategory_expense">
-            <h2 style="color: white; font-weight: 750;">Category-wise Total Expenses</h2>
-            <ul style="display: flex; list-style: none; flex-direction: row; justify-content: space-evenly;">
-                {% for category_total in category_totals %}
-                    <li style="display: flex; flex-direction: column; font-weight: 600; box-shadow: 0 0.25rem 2rem 0 rgba(0, 0, 0, 0.205); margin-right: 2rem; color: rgb(255, 255, 255); background-color: rgba(92, 239, 163, 0); padding: 2rem; border-radius: 1rem;">
-                        {{ category_total.category__name }} <br><br> Rs. {{ category_total.total_expenses }}
-                    </li>
-                {% endfor %}
-            </ul>
-            </div>
+            
             <div class="chart-container" style="margin-top: 5rem; margin-bottom: 5rem;">
                 <label for="time_interval" style="color: white; padding: 2rem; font-weight: 600;">Select Time Interval:</label>
                 <select id="time_interval" onchange="updateCharts()" style="background: transparent; border: 2px solid rgba(255, 255, 255, 0.188); border-radius: 10px; padding: 0.8rem; color: white; font-size: 1rem; font-weight: 700;">
@@ -135,6 +132,20 @@
         </div>
 
         <div class="right-container recent-expenses" style="margin-left: 10rem; margin-top: -5rem;">
+            <div class="category-expenses">
+                <h2 class="category_t" style="color: white; font-weight: 750;">Category-wise Total Expenses</h2>
+                <div style="display: flex; flex-direction: column; align-items: flex-start;">
+                    {% for category in predefined_categories %}
+                        <div style="display: flex; align-items: center; font-weight: 600; box-shadow: 0 0.25rem 2rem 0 rgba(0, 0, 0, 0.205); margin-bottom: 1rem; color: rgb(255, 255, 255); background-color: rgba(92, 239, 163, 0); padding: 1rem; border-radius: 1rem; width: 300px;">
+                            <img src="{% static category.icon %}" alt="{{ category.name }}" style="width: 50px; height: 50px; margin-right: 1rem;">
+                            <div>
+                                <strong>{{ category.name }}</strong><br>
+                                Rs. {{ category.total_expenses }}
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+            </div>
             <h2 style="font-weight: 700; font-family: 'Poppins'; color: white;">Recent Expenses</h2>
             <div class="card-container" style="margin-bottom: 5rem;">
                 {% for expense in recent_expenses %}
