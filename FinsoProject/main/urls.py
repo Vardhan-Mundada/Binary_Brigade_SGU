@@ -33,6 +33,9 @@ urlpatterns=[
     path('add_fixed_deposit/', views.add_fixed_deposit, name='add_fixed_deposit'),
     path('dashboard/', views.dashboard, name='dashboard'),
     path('profile/', views.profile_view, name='profile'),
+    path('transactions/', views.transactions_list, name='transactions_list'),
+    path('charts/',views.charts_view,name="charts_view"),
+    path('cashflow_minimizer/',views.minimize_cash_flow,name="minimize_cash_flow"),
 
 
 ]

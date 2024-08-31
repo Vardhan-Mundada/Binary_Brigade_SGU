@@ -29,6 +29,7 @@ from django.utils import timezone
 from .models import Stock, MutualFund, FixedDeposit
 import requests
 from .models import Stock, MutualFund, FixedDeposit
+from django.core.paginator import Paginator
 
 
 #SMS
@@ -568,7 +569,7 @@ def dashboard(request):
     # Calculate current value of mutual funds
     mutual_fund_values = []
     for mutual_fund in mutual_funds:
-        current_nav = 30
+        current_nav = get_nav_for_scheme(mutual_fund.name)
         current_value = float(current_nav) * float(mutual_fund.units_purchased)
         mutual_fund_values.append({
             'name': mutual_fund.name,
@@ -722,8 +723,10 @@ def chatbot(request):
             
             responses = {
                 'CategoryWiseExpenseTracking': get_category_response(preprocessed_input),
-                'GeneralExpenseTracking': get_category_response(preprocessed_input)
-                
+                'IncomeManagement' : get_income_management_response(preprocessed_input,request),
+                'InvestmentTracking' : get_investment_tracking_response(preprocessed_input,request),
+                # 'AnalyticsAndGraphs' : get_analytics_response(preprocessed_input),
+                'BudgetManagement' : get_budget_management(preprocessed_input,request)
             }
             
             response_message = responses.get(intent, intent)
@@ -780,6 +783,91 @@ def get_category_response(preprocessed_input):
 
     return "Here’s a general breakdown of your expenses."
 
+
+def get_income_management_response(text, request):
+    # Get data from the Income model
+    incomes = Income.objects.filter(user=request.user)
+    total_income = incomes.aggregate(total_income=Sum('amount'))['total_income'] or 0
+    
+    # Create an HTML table
+    table_html = '<table border="1">'
+    table_html += '<tr><th>Source</th><th>Amount</th><th>Date</th></tr>'
+    
+    for income in incomes:
+        table_html += f'<tr><td>{income.source}</td><td>{income.amount}</td><td>{income.date}</td></tr>'
+    
+    table_html += '</table>'
+    table_html += f'<p><strong>Total Income: </strong>{total_income}</p>'
+    
+    return table_html   
+
+def get_investment_tracking_response(preprocessed_input, request):
+    # Get data from the investment models
+    stocks = Stock.objects.filter(user=request.user)
+    mutual_funds = MutualFund.objects.filter(user=request.user)
+    fixed_deposits = FixedDeposit.objects.filter(user=request.user)
+    
+    # Initialize total investment sum
+    total_investment = 0
+    
+    # Create an HTML table
+    table_html = '<table border="1">'
+    table_html += '<tr><th>Investment Type</th><th>Name</th><th>Amount</th><th>Date</th></tr>'
+    
+    # Add stocks to the table
+    for stock in stocks:
+        total_stock_value = stock.number_of_shares * stock.purchase_price_per_share
+        table_html += f'<tr><td>Stock</td><td>{stock.ticker_symbol}</td><td>{total_stock_value:.2f}</td><td>{stock.date_invested}</td></tr>'
+        total_investment += total_stock_value
+    
+    # Add mutual funds to the table
+    for fund in mutual_funds:
+        total_fund_value = fund.units_purchased * fund.nav_at_purchase
+        table_html += f'<tr><td>Mutual Fund</td><td>{fund.name}</td><td>{total_fund_value:.2f}</td><td>{fund.date_invested}</td></tr>'
+        total_investment += total_fund_value
+    
+    # Add fixed deposits to the table
+    for deposit in fixed_deposits:
+        table_html += f'<tr><td>Fixed Deposit</td><td>{deposit.bank_name}</td><td>{deposit.amount_invested:.2f}</td><td>{deposit.date_invested}</td></tr>'
+        total_investment += deposit.amount_invested
+    
+    table_html += '</table>'
+    table_html += f'<p><strong>Total Investment: </strong>{total_investment:.2f}</p>'
+    
+    return table_html
+
+
+from django.db.models import Sum
+from django.utils import timezone
+
+def get_budget_management(preprocessed_input, request):
+    # Get data from the ExpenseCategory model
+    categories = ExpenseCategory.objects.filter(user=request.user)
+    
+    # Initialize the HTML table
+    table_html = '<table border="1">'
+    table_html += '<tr><th>Category</th><th>Spending</th><th>Budget Limit</th><th>Status</th></tr>'
+    
+    for category in categories:
+        # Calculate total spending for each category
+        total_spending = Transaction.objects.filter(
+            user=request.user,
+            category=category,
+            type='expense'
+        ).aggregate(total_spent=Sum('amount'))['total_spent'] or 0
+        
+        # Determine if the category is over budget
+        if total_spending > category.budget_limit:
+            status = f'Over budget by {total_spending - category.budget_limit:.2f}'
+        else:
+            status = f'Within budget, {category.budget_limit - total_spending:.2f} left'
+        
+        # Add a row to the table for each category
+        table_html += f'<tr><td>{category.name}</td><td>{total_spending:.2f}</td><td>{category.budget_limit:.2f}</td><td>{status}</td></tr>'
+    
+    table_html += '</table>'
+    
+    return table_html
 
 
 
@@ -865,6 +953,18 @@ def get_transactions_by_category_and_days(category_name, days=30):
     return transactions
 
 
+def get_nav_for_scheme(scheme_name):
+    file_path = os.path.join(base_dir, 'main','mutual_funds.json') 
+    # Read the data from the JSON file
+    with open(file_path, 'r') as file:
+        data = json.load(file)
+    
+    # Find the NAV for the given scheme name
+    for item in data:
+        if item["Scheme_Name"] == scheme_name:
+            return item["Net_Asset_Value"]
+    
+    return None
 
 
 #Recurring Bills
@@ -1090,7 +1190,11 @@ def add_mutual_fund(request):
     # api_response = requests.get(url, headers=headers, params=querystring).json()
 
     # funds = [scheme['Scheme_Name'] for scheme in api_response]
-    funds = []
+    fund_path = os.path.join(base_dir, 'main', 'mutual_funds.json')
+
+    with open(fund_path, 'r') as file:
+        data = json.load(file)
+    funds = [item["Scheme_Name"] for item in data]
     return render(request, 'add_mutual_fund.html', {'funds': funds})
 
 @login_required
@@ -1151,3 +1255,180 @@ def profile_view(request):
         'user_profile': user_profile,
     }
     return render(request, 'profile.html', context)
+@login_required
+def transactions_list(request):
+    # Get the transactions for the logged-in user
+    user_transactions = Transaction.objects.filter(user=request.user).order_by('-transaction_date')
+
+    # Paginate transactions
+    paginator = Paginator(user_transactions, 10)  # Show 10 transactions per page
+    page_number = request.GET.get('page')
+    page_obj = paginator.get_page(page_number)
+
+    # Replace 'unknown' with 'debited'
+    for transaction in page_obj.object_list:
+        if transaction.type == 'unknown':
+            transaction.type = 'debited'
+
+    return render(request, 'transactions_list.html', {'page_obj': page_obj})
+
+@login_required
+def charts_view(request):
+    # Get the last 30 days of transactions
+    end_date = timezone.now().date()
+    start_date = end_date - timedelta(days=29)
+    start_datetime = datetime.combine(start_date, time.min)
+    end_datetime = datetime.combine(end_date, time.max)
+    
+    transactions = Transaction.objects.filter(
+        user=request.user,
+        transaction_date__range=[start_datetime, end_datetime]
+    )
+
+    # Prepare data for charts
+    dates = []
+    credited = []
+    debited = []
+    total_credited = 0
+    total_debited = 0
+
+    for i in range(30):
+        current_date = start_date + timedelta(days=i)
+        dates.append(current_date.strftime('%Y-%m-%d'))
+        
+        day_credited = transactions.filter(
+            transaction_date__date=current_date,
+            type__in=['credited', 'income']  # Include both 'credited' and 'income'
+        ).aggregate(Sum('amount'))['amount__sum'] or 0
+        
+        day_debited = transactions.filter(
+            transaction_date__date=current_date,
+            type__in=['debited', 'debit', 'expense']  # Include 'debited', 'debit', and 'expense'
+        ).aggregate(Sum('amount'))['amount__sum'] or 0
+        
+        credited.append(float(day_credited))
+        debited.append(float(day_debited))
+        
+        total_credited += day_credited
+        total_debited += day_debited
+
+    # Handle 'unknown' type transactions
+    unknown_transactions = transactions.filter(type='unknown')
+    unknown_total = unknown_transactions.aggregate(Sum('amount'))['amount__sum'] or 0
+    print(dates)
+    print(credited)
+    print(debited)
+
+    context = {
+        'dates': json.dumps(dates),
+        'credited': json.dumps(credited),
+        'debited': json.dumps(debited),
+        'total_credited': json.dumps(float(total_credited)),
+        'total_debited': json.dumps(float(total_debited)),
+        'unknown_total': json.dumps(float(unknown_total)),
+    }
+
+    return render(request, 'charts.html', context)
+
+from django.shortcuts import render
+
+def minimize_cash_flow(request):
+    if request.method == 'POST':
+        transactions_input = request.POST.get('transactions', '')
+        transactions_list = transactions_input.splitlines()
+
+        if not transactions_list:
+            return render(request, 'minimize.html', {'error': 'No transactions provided'})
+
+        try:
+            transactions, participants = parse_transactions(transactions_list)
+            minimized_transactions = minimize_transactions(transactions, participants)
+            return render(request, 'minimize.html', {
+                'minimized_transactions': minimized_transactions,
+                'original_input': transactions_input
+            })
+        except Exception as e:
+            return render(request, 'minimize.html', {
+                'error': str(e),
+                'original_input': transactions_input
+            })
+
+    return render(request, 'minimize.html')
+
+def parse_transactions(transactions_list):
+    transactions = []
+    participants = set()
+
+    for line in transactions_list:
+        parts = line.split()
+        if len(parts) != 3:
+            raise ValueError("Each transaction must have three values: sender, receiver, amount")
+        sender, receiver, amount = parts
+        sender = sender.lower()
+        receiver = receiver.lower()
+        amount = int(amount)
+        transactions.append((sender, receiver, amount))
+        participants.add(sender)
+        participants.add(receiver)
+
+    return transactions, list(participants)
+
+def minimize_transactions(transactions, participants):
+    N = len(participants)
+
+    name_to_index = {name: i for i, name in enumerate(participants)}
+    index_to_name = {i: name for i, name in enumerate(participants)}
+
+    graph = [[0] * N for _ in range(N)]
+
+    for sender, receiver, amount in transactions:
+        graph[name_to_index[sender]][name_to_index[receiver]] += amount
+
+    return run_cash_flow_algorithm(graph, index_to_name)
+
+def run_cash_flow_algorithm(graph, index_to_name):
+    N = len(graph)
+    
+    def getMin(arr):
+        minInd = 0
+        for i in range(1, N):
+            if arr[i] < arr[minInd]:
+                minInd = i
+        return minInd
+
+    def getMax(arr):
+        maxInd = 0
+        for i in range(1, N):
+            if arr[i] > arr[maxInd]:
+                maxInd = i
+        return maxInd
+
+    def minOf2(x, y):
+        return x if x < y else y
+
+    def minCashFlowRec(amount):
+        mxCredit = getMax(amount)
+        mxDebit = getMin(amount)
+
+        if amount[mxCredit] == 0 and amount[mxDebit] == 0:
+            return []
+
+        min_amount = minOf2(-amount[mxDebit], amount[mxCredit])
+        amount[mxCredit] -= min_amount
+        amount[mxDebit] += min_amount
+
+        transaction = (index_to_name[mxDebit], index_to_name[mxCredit], min_amount)
+        result = [transaction]
+
+        result += minCashFlowRec(amount)
+        return result
+
+    def minCashFlow(graph):
+        amount = [0] * N
+        for p in range(N):
+            for i in range(N):
+                amount[p] += (graph[i][p] - graph[p][i])
+        return minCashFlowRec(amount)
+
+    minimized_transactions = minCashFlow(graph)
+    return [f"{debtor} pays {creditor} {amount}" for debtor, creditor, amount in minimized_transactions]

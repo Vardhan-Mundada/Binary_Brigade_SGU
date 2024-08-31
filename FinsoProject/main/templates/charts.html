@@ -1,0 +1,200 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<div class="container mt-5">
+    <h2>Financial Charts</h2>
+    
+    <div class="chart-row">
+        <div class="chart-container">
+            <canvas id="combinedChart"></canvas>
+        </div>
+        <div class="chart-description">
+            <h3>Credit vs Debit (Last 30 Days)</h3>
+            <p>This line chart shows the trend of credited and debited amounts over the last 30 days. The green line represents credited amounts, while the red line represents debited amounts.</p>
+        </div>
+    </div>
+    
+    <div class="chart-row reverse">
+        <div class="chart-description">
+            <h3>Total Credit vs Debit (Including Unknown)</h3>
+            <p>This pie chart provides an overview of the total credited, debited, and unknown amounts. It helps visualize the proportion of each category in relation to the total financial activity.</p>
+        </div>
+        <div class="chart-container">
+            <canvas id="pieChart"></canvas>
+        </div>
+    </div>
+    
+    <div class="chart-row">
+        <div class="chart-container">
+            <canvas id="creditedChart"></canvas>
+        </div>
+        <div class="chart-description">
+            <h3>Daily Credit (Last 30 Days)</h3>
+            <p>This bar chart displays the daily credited amounts for the past 30 days. It helps identify patterns or significant credit transactions over time.</p>
+        </div>
+    </div>
+    
+    <div class="chart-row reverse">
+        <div class="chart-description">
+            <h3>Daily Debit (Last 30 Days)</h3>
+            <p>This bar chart shows the daily debited amounts for the last 30 days. It helps track spending patterns and identify any unusual or large debit transactions.</p>
+        </div>
+        <div class="chart-container">
+            <canvas id="debitedChart"></canvas>
+        </div>
+    </div>
+</div>
+
+<style>
+    .chart-row {
+        display: flex;
+        margin-bottom: 2rem;
+        align-items: center;
+    }
+    .chart-row.reverse {
+        flex-direction: row-reverse;
+    }
+    .chart-container {
+        width: 50%;
+        padding: 1rem;
+    }
+    .chart-description {
+        width: 50%;
+        padding: 1rem;
+    }
+    body {
+    background: linear-gradient(135deg, #6ec6b8, #00b5ff);
+    height: 100vh;
+    margin: 0;
+}
+
+    @media (max-width: 768px) {
+        .chart-row, .chart-row.reverse {
+            flex-direction: column;
+        }
+        .chart-container, .chart-description {
+            width: 100%;
+        }
+    }
+</style>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js@3.7.1/dist/chart.min.js"></script>
+<script>
+    // Parse the data from Django
+    var dates = JSON.parse('{{ dates|safe }}');
+    var credited = JSON.parse('{{ credited|safe }}');
+    var debited = JSON.parse('{{ debited|safe }}');
+    var totalCredited = JSON.parse('{{ total_credited|safe }}');
+    var totalDebited = JSON.parse('{{ total_debited|safe }}');
+    var unknownTotal = JSON.parse('{{ unknown_total|safe }}');
+
+    console.log('Dates:', dates);
+    console.log('Credited:', credited);
+    console.log('Debited:', debited);
+    console.log('Total Credited:', totalCredited);
+    console.log('Total Debited:', totalDebited);
+    console.log('Unknown Total:', unknownTotal);
+
+    // Combined Chart
+    console.log('Creating Combined Chart');
+    var ctx = document.getElementById('combinedChart').getContext('2d');
+    new Chart(ctx, {
+        type: 'line',
+        data: {
+            labels: dates,
+            datasets: [{
+                label: 'Credited',
+                data: credited,
+                borderColor: 'green',
+                fill: false
+            }, {
+                label: 'Debited',
+                data: debited,
+                borderColor: 'red',
+                fill: false
+            }]
+        },
+        options: {
+            responsive: true,
+            plugins: {
+                title: {
+                    display: true,
+                    text: 'Credit vs Debit (Last 30 Days)'
+                }
+            }
+        }
+    });
+
+    // Pie Chart
+    console.log('Creating Pie Chart');
+    var pieCtx = document.getElementById('pieChart').getContext('2d');
+    new Chart(pieCtx, {
+        type: 'pie',
+        data: {
+            labels: ['Credited', 'Debited', 'Unknown'],
+            datasets: [{
+                data: [totalCredited, totalDebited, unknownTotal],
+                backgroundColor: ['green', 'red', 'gray']
+            }]
+        },
+        options: {
+            responsive: true,
+            plugins: {
+                title: {
+                    display: true,
+                    text: 'Total Credit vs Debit (Including Unknown)'
+                }
+            }
+        }
+    });
+
+    // Credited Chart
+    console.log('Creating Credited Chart');
+    var creditedCtx = document.getElementById('creditedChart').getContext('2d');
+    new Chart(creditedCtx, {
+        type: 'bar',
+        data: {
+            labels: dates,
+            datasets: [{
+                label: 'Credited',
+                data: credited,
+                backgroundColor: 'green'
+            }]
+        },
+        options: {
+            responsive: true,
+            plugins: {
+                title: {
+                    display: true,
+                    text: 'Daily Credit (Last 30 Days)'
+                }
+            }
+        }
+    });
+
+    // Debited Chart
+    console.log('Creating Debited Chart');
+    var debitedCtx = document.getElementById('debitedChart').getContext('2d');
+    new Chart(debitedCtx, {
+        type: 'bar',
+        data: {
+            labels: dates,
+            datasets: [{
+                label: 'Debited',
+                data: debited,
+                backgroundColor: 'red'
+            }]
+        },
+        options: {
+            responsive: true,
+            plugins: {
+                title: {
+                    display: true,
+                    text: 'Daily Debit (Last 30 Days)'
+                }
+            }
+        }
+    });
+</script>
+{% endblock %}
