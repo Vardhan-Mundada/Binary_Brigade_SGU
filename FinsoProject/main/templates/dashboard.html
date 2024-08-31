@@ -95,7 +95,7 @@
                         {% for income in incomes %}
                         <tr>
                             <td>{{ income.source }}</td>
-                            <td>${{ income.amount }}</td>
+                            <td>Rs.{{ income.amount }}</td>
                             <td>{{ income.date }}</td>
                         </tr>
                         {% empty %}
@@ -123,8 +123,8 @@
                         {% for category in categories %}
                         <tr>
                             <td>{{ category.name }}</td>
-                            <td>${{ category.budget_limit }}</td>
-                            <td>${{ category.current_expense }}</td>
+                            <td>Rs.{{ category.budget_limit }}</td>
+                           
                         </tr>
                         {% empty %}
                         <tr>
@@ -144,13 +144,109 @@
             <div class="card">
                 <p>Date: {{ expense.transaction_date }}</p>
                 <p>Category: {{ expense.category.name }}</p>
-                <p>Amount: ${{ expense.amount }}</p>
+                <p>Amount: Rs.{{ expense.amount }}</p>
             </div>
             {% empty %}
             <div class="card">
                 <p>No recent expenses found.</p>
             </div>
             {% endfor %}
+        </div>
+
+        <!-- Investments Section -->
+        <div class="flex-container">
+            <!-- Stocks Table -->
+            <div class="card">
+                <h2>Stocks</h2>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Ticker Symbol</th>
+                            <th>Number of Shares</th>
+                            <th>Purchase Price</th>
+                            <th>Date Invested</th>
+                            <th>Current Values</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for stock in stock_values %}
+                        <tr>
+                            <td>{{ stock.ticker_symbol }}</td>
+                            <td>{{ stock.number_of_shares }}</td>
+                            <td>Rs.{{ stock.purchase_price_per_share }}</td>
+                            <td>{{ stock.date_invested }}</td>
+                            <td>Rs.{{ stock.current_value }}</td>
+                        </tr>
+                        {% empty %}
+                        <tr>
+                            <td colspan="4">No stocks found.</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Mutual Funds Table -->
+            <div class="card">
+                <h2>Mutual Funds</h2>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Fund Name</th>
+                            <th>Units Purchased</th>
+                            <th>NAV at Purchase</th>
+                            <th>Date Invested</th>
+                            <th>Current Value</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for fund in mutual_fund_values %}
+                        <tr>
+                            <td>{{ fund.name }}</td>
+                            <td>{{ fund.units_purchased }}</td>
+                            <td>Rs.{{ fund.nav_at_purchase }}</td>
+                            <td>{{ fund.date_invested }}</td>
+                            <td>Rs.{{ fund.current_value }}</td>
+                        </tr>
+                        {% empty %}
+                        <tr>
+                            <td colspan="4">No mutual funds found.</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Fixed Deposits Table -->
+        <div class="card">
+            <h2>Fixed Deposits</h2>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Bank Name</th>
+                        <th>Amount Invested</th>
+                        <th>Interest Rate</th>
+                        <th>Date Invested</th>
+                        <th>Maturity Date</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for fd in fixed_deposits %}
+                    <tr>
+                        <td>{{ fd.bank_name }}</td>
+                        <td>Rs.{{ fd.amount_invested }}</td>
+                        <td>{{ fd.interest_rate }}%</td>
+                        <td>{{ fd.date_invested }}</td>
+                        <td>{{ fd.maturity_date }}</td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="5">No fixed deposits found.</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
         </div>
 
         <!-- Export Report Button -->
