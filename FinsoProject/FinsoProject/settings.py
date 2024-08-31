@@ -162,8 +162,5 @@ PORT = os.environ.get('PORT', 8000)
 
 ALLOWED_HOSTS = ['*']
 
-CSRF_TRUSTED_ORIGINS = [
-    '*',
-]
 
 
