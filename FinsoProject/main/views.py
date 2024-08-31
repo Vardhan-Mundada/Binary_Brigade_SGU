@@ -620,14 +620,31 @@ def get_category_response(preprocessed_input):
     if "top 5" in preprocessed_input or "highest spending" in preprocessed_input or "rank" in preprocessed_input:
         return "Here are the top 5 categories by spending: [Top categories details]"
     
+    # Define categories and preprocess them
     categories = ['entertainment', 'groceries', 'utilities', 'transportation', 'dining', 'food']
     preprocessed_categories = [preprocess_text(category) for category in categories]
-    for category in preprocessed_categories:  
+
+    # Loop through preprocessed categories to find matches
+    for category in preprocessed_categories:
         if category in preprocessed_input:
+            # Find the original category name
             original_category = categories[preprocessed_categories.index(category)]
-            return f"Here’s the spending for {original_category}: [Specific category details]"
+            
+            # Get transactions for the category and format them
+            transactions = get_transactions_by_category_and_days(original_category)
+            
+            if transactions:
+                # Format transactions for display
+                transaction_details = "\n".join(
+                    [f"Transaction ID: {transaction.id}, Amount: {transaction.amount}, Date: {transaction.transaction_date}, Notes: {transaction.notes}"
+                     for transaction in transactions]
+                )
+                return f"Here are your transactions for the category '{original_category}':\n{transaction_details}"
+            else:
+                return f"No transactions found for the category '{original_category}'."
     
     return "Here’s a general breakdown of your expenses."
+
 
 
 
@@ -675,3 +692,41 @@ def update_transaction_category(request):
         'transactions': transactions,
         'categories': categories
     })
+
+
+from django.shortcuts import render, get_object_or_404
+from django.utils import timezone
+from datetime import timedelta
+from .models import Transaction
+
+def transactions_for_past_days(request, num_days):
+    user = request.user 
+    end_date = timezone.now()
+    start_date = end_date - timedelta(days=num_days)
+    
+    transactions = Transaction.objects.filter(
+        user=user,
+        transaction_date__range=[start_date, end_date]
+    ).order_by('-transaction_date')
+    
+    context = {
+        'transactions': transactions,
+        'num_days': num_days,
+    }
+    return render(request, 'transactions_for_past_days.html', context)
+
+
+from django.utils import timezone
+from datetime import timedelta
+
+def get_transactions_by_category_and_days(category_name, days=30):
+    now = timezone.now()
+    start_date = now - timedelta(days=days)
+    categories = ExpenseCategory.objects.filter(name=category_name)
+    if not categories:
+        return []  # No categories found
+    transactions = Transaction.objects.filter(
+        category__in=categories,
+        transaction_date__gte=start_date
+    )
+    return transactions
