@@ -6,111 +6,133 @@
 {% load static %}
 <link rel="stylesheet" href="{% static 'style.css' %}">
 <style>
-/* Container for the entire form */
-.expense-container {
-  max-width: 600px;
-  margin: 2rem auto;
-  padding: 2rem;
-  background-color: #7979ab;
-  border-radius: 10px;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-  animation: fadeIn 0.5s ease-in-out;
-}
-
-/* Title style */
-h1 {
-  color: #ffffff;
-  font-size: 2rem;
-  font-weight: 600;
-  margin-bottom: 1.5rem;
-  text-align: center;
-}
-
-/* Style for each form group */
-.form-group {
-  margin-bottom: 1.5rem;
-  color: #ffffff;
-}
-
-/* Input labels styling */
-.input-label {
-  font-weight: bold;
-  margin-bottom: 0.5rem;
-  display: block;
-  color: #cccccc;
-}
-
-/* Common styles for inputs and select elements */
-input[type="text"],
-input[type="number"],
-select,
-input[type="date"] {
-  width: 100%;
-  padding: 12px;
-  border: none;
-  border-radius: 5px;
-  background-color: #2c2c3b;
-  color: #ffffff;
-  font-size: 1rem;
-  transition: border-color 0.3s ease;
-}
-
-/* Focus styles for inputs and select elements */
-input[type="text"]:focus,
-input[type="number"]:focus,
-select:focus,
-input[type="date"]:focus {
-  outline: none;
-  border: 2px solid #007bff;
-}
-
-/* Button styles */
-.btn-save,
-.btn-back {
-  display: inline-block;
-  background-color: #007bff;
-  color: #ffffff;
-  padding: 0.75rem 1.5rem;
-  border: none;
-  border-radius: 5px;
-  cursor: pointer;
-  font-size: 1rem;
-  font-weight: 600;
-  transition: background-color 0.3s ease, transform 0.3s ease;
-}
-
-.btn-save:hover,
-.btn-back:hover {
-  background-color: #0056b3;
-  transform: translateY(-2px);
-}
-
-/* Responsive design for mobile devices */
-@media screen and (max-width: 600px) {
+  /* Container for the entire form */
   .expense-container {
-    padding: 1.5rem;
+    max-width: 600px;
+    margin: 2rem auto;
+    padding: 2rem;
+    background-color: #7979ab;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    animation: fadeIn 0.5s ease-in-out;
   }
-  
+
+  /* Title style */
   h1 {
-    font-size: 1.5rem;
+    color: #ffffff;
+    font-size: 2rem;
+    font-weight: 600;
+    margin-bottom: 1.5rem;
+    text-align: center;
   }
-  
+
+  /* Style for each form group */
+  .form-group {
+    margin-bottom: 1.5rem;
+    color: #ffffff;
+  }
+
+  /* Input labels styling */
+  .input-label {
+    font-weight: bold;
+    margin-bottom: 0.5rem;
+    display: block;
+    color: #cccccc;
+  }
+
+  /* Common styles for inputs and select elements */
+  input[type="text"],
+  input[type="number"],
+  select,
+  input[type="date"] {
+    width: 100%;
+    padding: 12px;
+    border: none;
+    border-radius: 5px;
+    background-color: #2c2c3b;
+    color: #ffffff;
+    font-size: 1rem;
+    transition: border-color 0.3s ease;
+  }
+
+  /* Focus styles for inputs and select elements */
+  input[type="text"]:focus,
+  input[type="number"]:focus,
+  select:focus,
+  input[type="date"]:focus {
+    outline: none;
+    border: 2px solid #007bff;
+  }
+
+  /* Button styles */
   .btn-save,
   .btn-back {
-    width: 100%;
-    margin-bottom: 1rem;
+    display: inline-block;
+    background-color: #007bff;
+    color: #ffffff;
+    padding: 0.75rem 1.5rem;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 1rem;
+    font-weight: 600;
+    transition: background-color 0.3s ease, transform 0.3s ease;
   }
-}
 
+  .btn-save:hover,
+  .btn-back:hover {
+    background-color: #0056b3;
+    transform: translateY(-2px);
+  }
+
+  /* Responsive design for mobile devices */
+  @media screen and (max-width: 600px) {
+    .expense-container {
+      padding: 1.5rem;
+    }
+
+    h1 {
+      font-size: 1.5rem;
+    }
+
+    .btn-save,
+    .btn-back {
+      width: 100%;
+      margin-bottom: 1rem;
+    }
+  }
+
+
+  @media screen and (max-width: 300px) {
+    .expense-container {
+      padding: 0.5rem;
+      width: 300px;
+      margin-top: 100px;
+    }
+
+    h1 {
+      font-size: 1.5rem;
+    }
+
+    .btn-save,
+    .btn-back {
+      width: 100%;
+      margin-bottom: 1rem;
+    }
+
+    textarea {
+      width: -webkit-fill-available;
+    }
+  }
 </style>
 
 <div class="expense-container">
-    <h1>Add Expense</h1>
+  <h1>Add Expense</h1>
 
-    <form method="post" action="{% url 'add_expense' %}">
-        {% csrf_token %}
-        {{ form.as_p }}
-        <button type="submit" class="btn-save">Save Expense</button>
-    </form>
+  <form method="post" action="{% url 'add_expense' %}">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit" class="btn-save">Save Expense</button>
+  </form>
 </div>
 {% endblock %}

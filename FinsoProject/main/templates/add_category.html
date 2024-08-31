@@ -14,10 +14,11 @@
         box-sizing: border-box;
     }
 
-    
+
 
     .content {
-        margin-left: 80px; /* Adjust according to navbar width */
+        margin-left: 80px;
+        /* Adjust according to navbar width */
         padding: 20px;
     }
 
@@ -30,14 +31,18 @@
     }
 
     .category-form {
-        max-width: 500px; /* Increased width */
+        max-width: 500px;
+        /* Increased width */
         padding-top: 5rem;
         /* margin: 10rem auto;  */
-         /* White background */
-        padding: 40px; /* Increased padding */
+        /* White background */
+        padding: 40px;
+        /* Increased padding */
         border-radius: 8px;
-        box-shadow: 0 0 20px rgba(0, 0, 0, 0.3); /* Intense box shadow */
-        transition: transform 0.3s ease; /* Smooth transition effect */
+        box-shadow: 0 0 20px rgba(0, 0, 0, 0.3);
+        /* Intense box shadow */
+        transition: transform 0.3s ease;
+        /* Smooth transition effect */
         display: flex;
         text-align: center;
         flex-direction: column;
@@ -45,7 +50,8 @@
     }
 
     .category-form:hover {
-        transform: translateY(-5px); /* Move the form up on hover */
+        transform: translateY(-5px);
+        /* Move the form up on hover */
     }
 
     .category-form label {
@@ -57,79 +63,103 @@
     .category-form input[type="text"],
     .category-form input[type="number"],
     .category-form .budget-input {
-        width: 100%; /* Full width for better responsiveness */
-        max-width: 400px; /* Limit width for larger screens */
-        height: 2rem; /* Make both text inputs the same size */
-        padding: 15px; /* Increased padding */
+        width: 100%;
+        /* Full width for better responsiveness */
+        max-width: 400px;
+        /* Limit width for larger screens */
+        height: 2rem;
+        /* Make both text inputs the same size */
+        padding: 15px;
+        /* Increased padding */
         border: 1px solid #ccc;
         border-radius: 4px;
         box-sizing: border-box;
-        margin-bottom: 20px; /* Increased margin */
-        transition: border-color 0.3s ease; /* Smooth transition effect */
+        margin-bottom: 20px;
+        /* Increased margin */
+        transition: border-color 0.3s ease;
+        /* Smooth transition effect */
     }
 
     .category-form input[type="text"]:focus,
     .category-form input[type="number"]:focus,
     .category-form .budget-input:focus {
-        border-color: #333; /* Change border color on focus */
+        border-color: #333;
+        /* Change border color on focus */
     }
 
     .category-button,
     .category-button-back {
-        background-color: #333; /* Green button */
-        color: #fff; /* White text color */
-        padding: 15px 30px; /* Increased padding */
+        background-color: #333;
+        /* Green button */
+        color: #fff;
+        /* White text color */
+        padding: 15px 30px;
+        /* Increased padding */
         border: none;
         border-radius: 4px;
         cursor: pointer;
         font-size: 16px;
         display: block;
         width: 100%;
-        margin-top: 20px; /* Increased margin */
+        margin-top: 20px;
+        /* Increased margin */
         text-align: center;
-        transition: background-color 0.3s ease, transform 0.3s ease; /* Smooth transition effect */
-        text-decoration: none; /* Remove underline */
+        transition: background-color 0.3s ease, transform 0.3s ease;
+        /* Smooth transition effect */
+        text-decoration: none;
+        /* Remove underline */
     }
 
     .category-button:hover,
     .category-button-back:hover {
-        background-color: #333; /* Darker green color on hover */
-        transform: translateY(-5px); /* Move the button up on hover */
+        background-color: #333;
+        /* Darker green color on hover */
+        transform: translateY(-5px);
+        /* Move the button up on hover */
     }
 
     .category-button-back {
-        margin-top: 40px; /* Adjust margin to center the button vertically */
+        margin-top: 40px;
+        /* Adjust margin to center the button vertically */
     }
 
     /* Responsive Styles */
     @media (max-width: 768px) {
         .content {
-            margin-left: 0; /* Remove left margin on smaller screens */
+            margin-left: 0;
+            /* Remove left margin on smaller screens */
         }
 
         .category-form {
-            margin: 2rem auto; /* Reduce margin on smaller screens */
-            padding: 20px; /* Reduce padding */
+            margin: 2rem auto;
+            /* Reduce margin on smaller screens */
+            padding: 20px;
+            /* Reduce padding */
         }
 
         .category-title {
-            font-size: 28px; /* Smaller font size */
+            font-size: 28px;
+            /* Smaller font size */
         }
 
         .category-button,
         .category-button-back {
-            padding: 10px 20px; /* Smaller padding */
-            font-size: 14px; /* Smaller font size */
+            padding: 10px 20px;
+            /* Smaller padding */
+            font-size: 14px;
+            /* Smaller font size */
         }
 
         .category-form input[type="text"],
         .category-form input[type="number"],
         .category-form .budget-input {
-            max-width: 100%; /* Full width */
+            max-width: 100%;
+            /* Full width */
         }
 
         .category-button-back {
-            margin-top: 20px; /* Reduce margin */
+            margin-top: 20px;
+            /* Reduce margin */
         }
 
         .category-list {
@@ -152,36 +182,45 @@
 
     @media (max-width: 480px) {
         .category-title {
-            font-size: 24px; /* Smaller font size */
+            font-size: 24px;
+            /* Smaller font size */
         }
 
         .category-form {
-            margin: 1rem auto; /* Further reduce margin */
-            padding: 15px; /* Further reduce padding */
+            margin: 1rem auto;
+            /* Further reduce margin */
+            padding: 15px;
+            /* Further reduce padding */
         }
 
         .category-button,
         .category-button-back {
-            padding: 8px 16px; /* Further reduce padding */
-            font-size: 12px; /* Further reduce font size */
+            padding: 8px 16px;
+            /* Further reduce padding */
+            font-size: 12px;
+            /* Further reduce font size */
         }
 
         .category-form input[type="text"],
         .category-form input[type="number"],
         .category-form .budget-input {
-            width: 100%; /* Full width */
-            max-width: 100%; /* Full width */
+            width: 100%;
+            /* Full width */
+            max-width: 100%;
+            /* Full width */
         }
 
         .category-button-back {
-            margin-top: 10px; /* Further reduce margin */
+            margin-top: 10px;
+            /* Further reduce margin */
         }
 
         .category-list ul {
             padding: 0;
             margin: 0;
         }
-        body{
+
+        body {
             justify-content: flex-start;
         }
 
@@ -189,10 +228,14 @@
             padding: 1rem;
             margin-bottom: 0.5rem;
         }
+
+        .cont {
+            margin-top: 100px;
+        }
     }
 </style>
 
-<div style="display: flex; flex-direction: column;">
+<div style="display: flex; flex-direction: column;" class="cont">
     <h1 class="category-title" style="color: rgb(0, 0, 0);">Add Category</h1>
     <form method="post" action="{% url 'add_category' %}" class="category-form">
         {% csrf_token %}
@@ -201,7 +244,7 @@
         <a href="{% url 'category_list' %}" class="category-button-back">Back to Category List</a>
     </form>
 
-    
+
 </div>
 
 {% endblock %}

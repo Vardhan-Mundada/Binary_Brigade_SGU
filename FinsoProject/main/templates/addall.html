@@ -14,59 +14,88 @@
     margin-left: 50px;
     margin-top: 200px;
   }
+
+  .button a {
+    color: #000;
+    /* Dark color for text inside button */
+    text-decoration: none;
+    /* Remove underline */
+  }
+
   @media screen and (max-width: 600px) {
     .containerr {
       margin-left: 0;
-      margin-top: 0;
+      margin-top: ;
       text-align: center;
     }
-    a{
+
+    a {
       color: black;
     }
-    
-  }
 
+  }
 </style>
 <link rel="stylesheet" href="{% static 'style.css' %}">
 <div style="min-height: 60vh;">
-<div class="containerr">
-  <div class="card expense" style="width: 300px; padding: 20px; margin: 10px; border: 1px solid #ccc; border-radius: 8px; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); background-color: #ff9999;">
-    <h2 style="font-size: 20px; margin-bottom: 10px;">Add Expense</h2>
-    <p style="font-size: 16px; margin-bottom: 15px;">Click below to add a new expense.</p>
-    <button class="button" style="padding: 10px 20px; background-color: #007bff; color: #fff; border: none; border-radius: 5px; cursor: pointer;"><a href="{% url 'add_expense' %}">Add Expense</a></button>
-  </div>
+  <div class="containerr">
+    <div class="card expense"
+      style="width: 300px; padding: 20px; margin: 10px; border: 1px solid #ccc; border-radius: 8px; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); background-color: #ff9999;">
+      <h2 style="font-size: 20px; margin-bottom: 10px;">Add Expense</h2>
+      <p style="font-size: 16px; margin-bottom: 15px;">Click below to add a new expense.</p>
+      <button class="button"
+        style="padding: 10px 20px; background-color: #007bff; color: #fff; border: none; border-radius: 5px; cursor: pointer;"><a
+          href="{% url 'add_expense' %}">Add Expense</a></button>
+    </div>
 
-  <div class="card income" style="width: 300px; padding: 20px; margin: 10px; border: 1px solid #ccc; border-radius: 8px; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); background-color: #99ff99;">
-    <h2 style="font-size: 20px; margin-bottom: 10px;">Add Income</h2>
-    <p style="font-size: 16px; margin-bottom: 15px;">Click below to add a new income.</p>
-    <button class="button" style="padding: 10px 20px; background-color: #007bff; color: #fff; border: none; border-radius: 5px; cursor: pointer;"><a href="{% url 'add_income' %}">Add Income</a></button>
-  </div>
+    <div class="card income"
+      style="width: 300px; padding: 20px; margin: 10px; border: 1px solid #ccc; border-radius: 8px; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); background-color: #99ff99;">
+      <h2 style="font-size: 20px; margin-bottom: 10px;">Add Income</h2>
+      <p style="font-size: 16px; margin-bottom: 15px;">Click below to add a new income.</p>
+      <button class="button"
+        style="padding: 10px 20px; background-color: #007bff; color: #fff; border: none; border-radius: 5px; cursor: pointer;"><a
+          href="{% url 'add_income' %}">Add Income</a></button>
+    </div>
 
-  <div class="card category" style="width: 300px; padding: 20px; margin: 10px; border: 1px solid #ccc; border-radius: 8px; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); background-color: #9999ff;">
-    <h2 style="font-size: 20px; margin-bottom: 10px;">Add Category</h2>
-    <p style="font-size: 16px; margin-bottom: 15px;">Click below to add a new category.</p>
-    <button class="button" style="padding: 10px 20px; background-color: #007bff; color: #fff; border: none; border-radius: 5px; cursor: pointer;"><a href="{% url 'add_category' %}">Add Category</a></button>
+    <div class="card category"
+      style="width: 300px; padding: 20px; margin: 10px; border: 1px solid #ccc; border-radius: 8px; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); background-color: #9999ff;">
+      <h2 style="font-size: 20px; margin-bottom: 10px;">Add Category</h2>
+      <p style="font-size: 16px; margin-bottom: 15px;">Click below to add a new category.</p>
+      <button class="button"
+        style="padding: 10px 20px; background-color: #007bff; color: #fff; border: none; border-radius: 5px; cursor: pointer;"><a
+          href="{% url 'add_category' %}">Add Category</a></button>
+    </div>
+    <div class="card expense"
+      style="width: 300px; padding: 20px; margin: 10px; border: 1px solid #ccc; border-radius: 8px; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); background-color: #ff9999;">
+      <h2 style="font-size: 20px; margin-bottom: 10px;">Add Recurring Bills</h2>
+      <p style="font-size: 16px; margin-bottom: 15px;">Click below to add a new recurring bill</p>
+      <button class="button"
+        style="padding: 10px 20px; background-color: #007bff; color: #fff; border: none; border-radius: 5px; cursor: pointer;"><a
+          href="{% url 'add_recurring_expense' %}">Add Expense</a></button>
+    </div>
+    <div class="card category"
+      style="width: 300px; padding: 20px; margin: 10px; border: 1px solid #ccc; border-radius: 8px; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); background-color: #9ef7ec;">
+      <h2 style="font-size: 20px; margin-bottom: 10px;">Add Stocks</h2>
+      <p style="font-size: 16px; margin-bottom: 15px;">Click below to add new stocks.</p>
+      <button class="button"
+        style="padding: 10px 20px; background-color: #007bff; color: #fff; border: none; border-radius: 5px; cursor: pointer;"><a
+          href="{% url 'add_stock' %}">Add Stocks</a></button>
+    </div>
+    <div class="card category"
+      style="width: 300px; padding: 20px; margin: 10px; border: 1px solid #ccc; border-radius: 8px; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); background-color: #e2ff99;">
+      <h2 style="font-size: 20px; margin-bottom: 10px;">Add Mutual Funds</h2>
+      <p style="font-size: 16px; margin-bottom: 15px;">Click below to add a new mutual fund.</p>
+      <button class="button"
+        style="padding: 10px 20px; background-color: #007bff; color: #fff; border: none; border-radius: 5px; cursor: pointer;"><a
+          href="{% url 'add_mutual_fund' %}">Add Mutual Funds</a></button>
+    </div>
+    <div class="card category"
+      style="width: 300px; padding: 20px; margin: 10px; border: 1px solid #ccc; border-radius: 8px; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); background-color: #ff99fd;">
+      <h2 style="font-size: 20px; margin-bottom: 10px;">Add Fixed Deposit</h2>
+      <p style="font-size: 16px; margin-bottom: 15px;">Click below to add a new fixed deposit.</p>
+      <button class="button"
+        style="padding: 10px 20px; background-color: #007bff; color: #fff; border: none; border-radius: 5px; cursor: pointer;"><a
+          href="{% url 'add_fixed_deposit' %}">Add Fixed Deposit</a></button>
+    </div>
   </div>
-  <div class="card expense" style="width: 300px; padding: 20px; margin: 10px; border: 1px solid #ccc; border-radius: 8px; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); background-color: #ff9999;">
-    <h2 style="font-size: 20px; margin-bottom: 10px;">Add Recurring Bills</h2>
-    <p style="font-size: 16px; margin-bottom: 15px;">Click below to add a new recurring bill</p>
-    <button class="button" style="padding: 10px 20px; background-color: #007bff; color: #fff; border: none; border-radius: 5px; cursor: pointer;"><a href="{% url 'add_recurring_expense' %}">Add Expense</a></button>
-  </div>
-    <div class="card category" style="width: 300px; padding: 20px; margin: 10px; border: 1px solid #ccc; border-radius: 8px; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); background-color: #9ef7ec;">
-    <h2 style="font-size: 20px; margin-bottom: 10px;">Add Stocks</h2>
-    <p style="font-size: 16px; margin-bottom: 15px;">Click below to add new stocks.</p>
-    <button class="button" style="padding: 10px 20px; background-color: #007bff; color: #fff; border: none; border-radius: 5px; cursor: pointer;"><a href="{% url 'add_stock' %}">Add Stocks</a></button>
-  </div>
-  <div class="card category" style="width: 300px; padding: 20px; margin: 10px; border: 1px solid #ccc; border-radius: 8px; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); background-color: #e2ff99;">
-    <h2 style="font-size: 20px; margin-bottom: 10px;">Add Mutual Funds</h2>
-    <p style="font-size: 16px; margin-bottom: 15px;">Click below to add a new mutual fund.</p>
-    <button class="button" style="padding: 10px 20px; background-color: #007bff; color: #fff; border: none; border-radius: 5px; cursor: pointer;"><a href="{% url 'add_mutual_fund' %}">Add Mutual Funds</a></button>
-  </div>
-  <div class="card category" style="width: 300px; padding: 20px; margin: 10px; border: 1px solid #ccc; border-radius: 8px; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); background-color: #ff99fd;">
-    <h2 style="font-size: 20px; margin-bottom: 10px;">Add Fixed Deposit</h2>
-    <p style="font-size: 16px; margin-bottom: 15px;">Click below to add a new fixed deposit.</p>
-    <button class="button" style="padding: 10px 20px; background-color: #007bff; color: #fff; border: none; border-radius: 5px; cursor: pointer;"><a href="{% url 'add_fixed_deposit' %}">Add Fixed Deposit</a></button>
-  </div>
-</div>
 </div>
 {% endblock %}
