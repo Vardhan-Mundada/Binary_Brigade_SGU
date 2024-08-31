@@ -50,9 +50,9 @@ body {
   outline: 0;
   background-color: #328f8a;
   background-image: linear-gradient(45deg, #328f8a, #08ac4b);
-  width: 100%;
+  height: 2.01 rem;
+  width: 40%;
   border: 0;
-  padding: 15px;
   color: #FFFFFF;
   font-size: 14px;
   -webkit-transition: all 0.3 ease;
@@ -96,8 +96,7 @@ body {
     padding: 20px;
   }
 
-  .form input,
-  .form button {
+  .form input{
     font-size: 16px;
     padding: 12px;
   }
