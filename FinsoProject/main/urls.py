@@ -23,3 +23,4 @@ urlpatterns=[
     path('update-transactions/', views.update_transaction_category, name='update_transaction_category'),
     # path('expense-statistics/', views.expense_statistics, name='expense_statistics'),
 ]
+

@@ -8,12 +8,29 @@
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.5.0/css/all.css">
     <script src="//ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
     <link rel="stylesheet" href="{% static 'chatbot.css' %}"> <!-- Make sure style.css is correctly referenced -->
+
+    <style>
+        @media (max-width: 380px) {
+
+            .msgbox {
+                background-color: rgb(135, 189, 42);
+            }
+
+            .msg_head .card {
+                height: 1000px;
+            }
+
+            .user_info span {
+                font-size: 40px;
+            }
+        }
+    </style>
 </head>
 
 <body>
-    <div class="container-fluid h-100">
-        <div class="row justify-content-center h-100">
-            <div class="col-md-8 col-xl-8 chat">
+    <div class="container-fluid h-100 w-100">
+        <div class="row justify-content-center h-100 w-100">
+            <div class="chat w-100">
                 <div class="card">
                     <div class="card-header msg_head">
                         <div class="d-flex bd-highlight">
@@ -30,7 +47,7 @@
                     </div>
                     <div id="messageFormeight" class="card-body msg_card_body">
                     </div>
-                    <div class="card-footer">
+                    <div class="card-footer msgbox">
                         <form id="messageArea" class="input-group">
                             <input type="text" id="text" name="msg" placeholder="Type your message..."
                                 autocomplete="off" class="form-control type_msg" required />
@@ -61,10 +78,10 @@
 
                 $.ajax({
                     type: "POST",
-                    url: "{% url 'chatbot' %}",  
-                    data: JSON.stringify({ message: rawText }),  
-                    contentType: "application/json",  
-                    dataType: "json",  
+                    url: "{% url 'chatbot' %}",
+                    data: JSON.stringify({ message: rawText }),
+                    contentType: "application/json",
+                    dataType: "json",
                 }).done(function (data) {
                     var botHtml = '<div class="d-flex justify-content-start mb-4"><div class="img_cont_msg"><img src="https://i.ibb.co/fSNP7Rz/icons8-chatgpt-512.png" class="rounded-circle user_img_msg"></div><div class="msg_cotainer">' + data.response + '<span class="msg_time">' + str_time + '</span></div></div>';
                     $("#messageFormeight").append($.parseHTML(botHtml));

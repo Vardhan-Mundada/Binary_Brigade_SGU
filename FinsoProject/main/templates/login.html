@@ -1,32 +1,26 @@
+{% extends 'base.html' %}
+
 {% load static %}
-<!DOCTYPE html>
-<html>
-<head>
-    <link rel="stylesheet" href="{% static 'style.css' %}">
-    <title>Finso - Login</title>
-</head>
-<body style="background: rgb(67, 69, 112);
-background: radial-gradient(
-    circle,
-    rgba(67, 69, 112, 1) 3%,
-    rgba(35, 36, 57, 1) 60%
-); color: white;">
-    <div class="login-page">
-        <div class="form" style="background: transparent;">
-            <div class="login" style="background: transparent;">
-                <div class="login-header">
-                    <h3>LOGIN</h3>
-                    <p>Please enter your credentials to login.</p>
-                </div>
+
+{% block title %}Finso - Login{% endblock %}
+
+{% block content %}
+<link rel="stylesheet" href="{% static 'style.css' %}">
+<div class="login-page">
+    <div class="form">
+        <div class="login">
+            <div class="login-header">
+                <h3>LOGIN</h3>
+                <p>Please enter your credentials to login.</p>
             </div>
-            <form method="post" class="login-form" action="{% url 'login' %}">
-                {% csrf_token %}
-                <input type="text" name="username" placeholder="Username"/>
-                <input type="password" name="password" placeholder="Password"/>
-                <button type="submit">Login</button>
-                <p class="message">Not registered? <a href="{% url 'register' %}">Create an account</a></p>
-            </form>
         </div>
+        <form method="post" class="login-form" action="/login">
+            {% csrf_token %}
+            <input type="text" name="username" placeholder="Username" />
+            <input type="password" name="password" placeholder="Password" />
+            <button type="submit">Login</button>
+            <p class="message">Not registered? <a href="/register">Create an account</a></p>
+        </form>
     </div>
-</body>
-</html>
+</div>
+{% endblock %}

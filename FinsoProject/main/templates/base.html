@@ -1,14 +1,16 @@
 {% load static %}
 <!DOCTYPE html>
 <html lang="en" dir="ltr">
+
 <head>
     <meta charset="utf-8">
     <title>{% block title %}Finso{% endblock %}</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="{% static 'base.css' %}">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css"/>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" />
 
 </head>
+
 <body>
     <nav class="navv">
         <input type="checkbox" id="check">
@@ -17,26 +19,52 @@
         </label>
         <label class="logo">Finso</label>
         <ul class="navul">
+            <li style="display: flex; justify-content: center; align-items: center;">
+                <label for="check" class="checkbtn cross">
+                    <i class="fas fa-times"></i> <!-- Close icon -->
+                </label>
+            </li>
             {% if user.is_authenticated %}
-                <li><a href="{% url 'addall' %}"><i class="fas fa-plus"></i><p>Add</p></a></li>
-                <li><a href="#"><i class="fas fa-list icon"></i><p>List</p></a></li>
-                <li><a href="{% url 'dashboard' %}"><i class="fas fa-tachometer-alt icon"></i><p>Dashboard</p></a></li>
-                <li><a href="#"><i class="fas fa-chart-line icon"></i><p>Analytics</p></a></li>
-                <li><a href="#"><i class="fas fa-bell icon"></i><p>Notifications</p></a></li>
-                <li><a href="{% url 'logout' %}"><i class="fas fa-sign-out-alt icon"></i><p>Logout</p></a></li>
+            <li><a href="{% url 'addall' %}"><i class="fas fa-plus"></i>
+                    <p>Add</p>
+                </a></li>
+            <li><a href="#"><i class="fas fa-list icon"></i>
+                    <p>List</p>
+                </a></li>
+            <li><a href="{% url 'dashboard' %}"><i class="fas fa-tachometer-alt icon"></i>
+                    <p>Dashboard</p>
+                </a></li>
+            <li><a href="#"><i class="fas fa-chart-line icon"></i>
+                    <p>Analytics</p>
+                </a></li>
+            <li><a href="#"><i class="fas fa-bell icon"></i>
+                    <p>Notifications</p>
+                </a></li>
+            <li><a href="{% url 'logout' %}"><i class="fas fa-sign-out-alt icon"></i>
+                    <p>Logout</p>
+                </a></li>
             {% else %}
-                <li><a class="active" href="#"><i class="fas fa-home icon"></i><p>Home</p></a></li>
-                <li><a href="{% url 'login' %}"><i class="fas fa-sign-in-alt icon"></i><p>Login</p></a></li>
-                <li><a href="{% url 'register' %}"><i class="fas fa-user-plus icon"></i><p>Register</p></a></li>
+            <li><a class="active" href="#"><i class="fas fa-home icon"></i>
+                    <p>Home</p>
+                </a></li>
+            <li><a href="{% url 'login' %}"><i class="fas fa-sign-in-alt icon"></i>
+                    <p>Login</p>
+                </a></li>
+            <li><a href="{% url 'register' %}"><i class="fas fa-user-plus icon"></i>
+                    <p>Register</p>
+                </a></li>
+
             {% endif %}
         </ul>
-        
+
     </nav>
 
     <div class="content">
         {% block content %}
         <!-- Page content goes here -->
+      
         {% endblock %}
     </div>
 </body>
+
 </html>
