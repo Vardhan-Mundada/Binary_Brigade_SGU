@@ -917,6 +917,36 @@ def update_transaction_category(request):
     })
 
 
+
+
+from django.http import JsonResponse
+
+@login_required
+def load_more_transactions(request):
+    user = request.user
+    start = int(request.GET.get('start', 0))  # Get the starting index from the AJAX request
+    transactions = Transaction.objects.filter(user=user, category__name='Miscellaneous')[start:start + 20]
+    
+    # Prepare transaction data for JSON response
+    transactions_data = [
+        {
+            'id': transaction.id,
+            'amount': transaction.amount,
+            'notes': transaction.notes,
+            'category': {
+                'id': transaction.category.id,
+                'name': transaction.category.name
+            },
+            'categories': [{'id': category.id, 'name': category.name} for category in ExpenseCategory.objects.filter(user=user)]
+        }
+        for transaction in transactions
+    ]
+    
+    return JsonResponse({'transactions': transactions_data})
+
+
+
+
 from django.shortcuts import render, get_object_or_404
 from django.utils import timezone
 from datetime import timedelta

@@ -1,17 +1,107 @@
 {% extends 'base.html' %}
 
-{% block title %}Home - Finso{% endblock %}
-
+{% block title %}Update Transactions - Finso{% endblock %}
 
 {% block content %}
 {% load static %}
-<link rel="stylesheet" href="{% static 'style.css' %}">
+<!-- <link rel="stylesheet" href="{% static 'style.css' %}"> -->
 <style>
-    body{
-        color: white !important;
+    body {
+        color: #ffffff !important; /* Whitish text color */
+        background: radial-gradient(circle,
+      rgba(67, 69, 112, 1) 3%,
+      rgba(35, 36, 57, 1) 60%);
+
+      font-family: "Roboto", sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  overflow-x: hidden;
+    }
+
+    .content{
+    overflow: hidden;
+    }
+
+    .container {
+        overflow: overlay;
+        max-width: 900px;
+        margin: 0 auto;
+        padding: 20px;
+    }
+
+    h1 {
+        text-align: center;
+        color: #00bfff; /* Light blue for the header */
+        margin-bottom: 30px;
+    }
+
+    table {
+        overflow-x: auto; 
+        width: 100%;
+        border-collapse: collapse;
+        margin-bottom: 20px;
+    }
+
+    th, td {
+        padding: 12px 15px;
+        text-align: left;
+        border-bottom: 1px solid #444; /* Darker border for contrast */
+        color: #ffffff; /* Whitish text color for table content */
+    }
+
+    th {
+        background-color: #44475a; /* Darker gray for table headers */
+        color: #ffffff;
+    }
+
+    tr:hover {
+        background-color: #3c3f44; /* Slightly lighter background on hover */
+    }
+
+    select, button {
+        padding: 6px 12px;
+        font-size: 14px;
+        margin: 5px 0;
+        color: #ffffff; /* Whitish text for select and button */
+        background-color: #4a4e54; /* Dark background for inputs */
+        border: 1px solid #666; /* Slightly lighter border */
+        border-radius: 4px;
+    }
+
+    button {
+        background-color: #00bfff; /* Light blue for the button */
+        color: #ffffff;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+    }
+
+    button:hover {
+        background-color: #0080ff; /* Darker blue on hover */
+    }
+
+    #load-more-container {
+        text-align: center;
+        margin-top: 20px;
+    }
+
+    #load-more {
+        background-color: #28a745; /* Green color for the load more button */
+        color: #ffffff;
+        border: none;
+        padding: 10px 20px;
+        font-size: 16px;
+        cursor: pointer;
+        border-radius: 5px;
+    }
+
+    #load-more:hover {
+        background-color: #218838; /* Darker green on hover */
     }
 </style>
-<h1>Update Transactions</h1>
+
+<div class="container">
+    <h1>Update Transactions</h1>
     
     <table>
         <thead>
@@ -24,7 +114,7 @@
                 <th>Update</th>
             </tr>
         </thead>
-        <tbody>
+        <tbody id="transaction-table">
             {% for transaction in transactions %}
             <tr>
                 <form method="post" action="">
@@ -49,4 +139,50 @@
             {% endfor %}
         </tbody>
     </table>
+
+    <!-- Load More Button -->
+    <div id="load-more-container">
+        <button id="load-more">Load More</button>
+    </div>
+</div>
+
+<script>
+    document.getElementById('load-more').onclick = function () {
+        fetch('/load-more-transactions/?start=' + document.getElementById('transaction-table').rows.length)
+        .then(response => response.json())
+        .then(data => {
+            if (data.transactions.length > 0) {
+                const tbody = document.getElementById('transaction-table');
+                data.transactions.forEach(transaction => {
+                    const row = document.createElement('tr');
+                    row.innerHTML = `
+                        <form method="post" action="">
+                            {% csrf_token %}
+                            <td>${transaction.id}</td>
+                            <td>${transaction.amount}</td>
+                            <td>${transaction.notes}</td>
+                            <td>${transaction.category.name}</td>
+                            <td>
+                                <select name="category">
+                                    ${transaction.categories.map(category => `
+                                        <option value="${category.id}" ${category.id === transaction.category.id ? 'selected' : ''}>${category.name}</option>
+                                    `).join('')}
+                                </select>
+                            </td>
+                            <td>
+                                <input type="hidden" name="transaction_id" value="${transaction.id}">
+                                <button type="submit">Update</button>
+                            </td>
+                        </form>
+                    `;
+                    tbody.appendChild(row);
+                });
+            } else {
+                document.getElementById('load-more-container').style.display = 'none';
+            }
+        })
+        .catch(error => console.error('Error loading transactions:', error));
+    };
+</script>
+
 {% endblock %}
