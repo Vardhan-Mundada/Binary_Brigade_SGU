@@ -1,0 +1,118 @@
+<!-- templates/add_expense.html -->
+{% extends 'base.html' %}
+
+{% block title %}Add Expense{% endblock %}
+
+{% block content %}
+{% load static %}
+<link rel="stylesheet" href="{% static 'style.css' %}">
+<style>
+.expense-container {
+  max-width: 600px;
+  margin: 0 auto;
+  padding: 40px;
+  background-color: #f9f9f9;
+  border-radius: 8px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  text-align: center;
+  margin-top: 1rem;
+}
+
+h1 {
+  margin-top: 0;
+  margin-bottom: 20px;
+  color: #333;
+  font-size: 24px;
+}
+
+.form-group {
+  margin-bottom: 20px;
+}
+
+.input-label {
+  font-weight: bold;
+  display: block;
+  margin-bottom: 10px;
+}
+
+input[type="text"],
+input[type="number"],
+select,
+input[type="date"] {
+  width: calc(100% - 20px);
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  box-sizing: border-box;
+  margin-bottom: 14px;
+  transition: border-color 0.3s ease;
+}
+
+input[type="text"]:focus,
+input[type="number"]:focus,
+select:focus,
+input[type="date"]:focus {
+  border-color: #333;
+}
+
+.btn-save {
+  background-color: #45a049;
+  margin-top: 10px;
+  margin-right: 10px; /* Add margin between buttons */
+  color: #fff;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 16px;
+  transition: background-color 0.3s ease;
+  margin-bottom: 1rem;
+}
+
+.btn-back {
+  background-color: #45a049;
+  padding-top: 20px;
+  margin-top: 1rem;
+  color: #fff;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 16px;
+  transition: background-color 0.3s ease;
+  text-decoration: none; /* Remove underline */
+}
+
+.btn-save:hover,
+.btn-back:hover {
+  background-color: #0ca90f;
+}
+
+/* Animation */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.expense-container {
+  animation: fadeIn 0.5s ease-in-out;
+}
+
+</style>
+<div  style="color: white; margin-left:10rem; padding: 3rem;">
+    <h1 style="color: white;">Add Expense</h1>
+
+    <form method="post" action="{% url 'add_expense' %}">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit" style="text-decoration: none; margin-left: -2rem; background: transparent; border: 2px solid rgba(255, 255, 255, 0.164); border-radius: 10px; padding: 0.8rem; color: white; font-size: 1rem; font-weight: 700; ">Save Expense</button>
+    </form>
+    <div style="margin-top: 2rem;">
+    
+  </div>
+</div>
+{% endblock %}

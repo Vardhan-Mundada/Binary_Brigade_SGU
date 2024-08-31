@@ -1,7 +1,7 @@
 from django import forms
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import User
-from .models import UserProfile
+from .models import UserProfile, Income, Transaction, ExpenseCategory
 
 class UserRegistrationForm(UserCreationForm):
     phone_no = forms.CharField(max_length=15)
@@ -29,3 +29,31 @@ class UserRegistrationForm(UserCreationForm):
             basic_income=self.cleaned_data['basic_income']
         )
         return user
+
+
+
+
+class IncomeForm(forms.ModelForm):
+    class Meta:
+        model = Income
+        fields = ['amount', 'source'] 
+
+
+
+class ExpenseForm(forms.ModelForm):
+    class Meta:
+        model = Transaction
+        fields = ['amount', 'category', 'notes', 'type']
+
+    widgets = {
+        'amount': forms.NumberInput(attrs={'step': '0.01'}),
+        'category': forms.Select(attrs={'class': 'form-control'}),
+        'notes': forms.Textarea(attrs={'rows': 4, 'cols': 50}),
+        'type': forms.Select(attrs={'class': 'form-control'}),
+    }
+
+
+class CategoryForm(forms.ModelForm):
+    class Meta:
+        model = ExpenseCategory
+        fields = ['name', 'budget_limit']

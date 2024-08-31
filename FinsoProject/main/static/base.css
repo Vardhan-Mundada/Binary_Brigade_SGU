@@ -10,7 +10,10 @@ body {
     font-family: "Montserrat", sans-serif;
 }
 
-nav {
+.navv ul{
+    z-index: 1000;
+}
+.navv {
     background: rgba(35, 36, 57, 1);
     height: 80px;
     width: 100%;
@@ -24,19 +27,19 @@ label.logo {
     font-weight: bold;
 }
 
-nav ul {
+.navv ul {
     float: right;
     margin-right: 20px;
 }
 
-nav ul li {
+.navv ul li {
     display: inline-block;
     line-height: 80px;
     margin: 0 5px;
     position: relative;
 }
 
-nav ul li a {
+.navv ul li a {
     color: white;
     font-size: 17px;
     padding: 7px 13px;
@@ -46,12 +49,12 @@ nav ul li a {
     align-items: center;
 }
 
-nav ul li a p {
+.navv ul li a p {
     display: none; /* Hide text by default */
     margin-left: 8px;
 }
 
-nav ul li a i {
+.navv ul li a i {
     font-size: 20px; /* Adjust icon size if needed */
 }
 
@@ -82,10 +85,10 @@ a.active, a:hover {
         font-size: 30px;
         padding-left: 50px;
     }
-    nav ul li a i {
+    .navv ul li a i {
         display: none; /* Hide icons on mobile */
     }
-    nav ul li a p {
+    .navv ul li a p {
         display: inline; /* Show text on mobile */
         font-size: 16px;
     }
@@ -106,12 +109,12 @@ a.active, a:hover {
         text-align: center;
         transition: all .5s;
     }
-    nav ul li {
+    .navv ul li {
         display: block;
         margin: 50px 0;
         line-height: 30px;
     }
-    nav ul li a {
+    .navv ul li a {
         font-size: 20px;
     }
     a:hover, a.active {
@@ -126,8 +129,8 @@ a.active, a:hover {
     }
 }
 
-section {
+/* .section {
     background: url(bg1.jpg) no-repeat;
     background-size: cover;
     height: calc(100vh - 80px);
-}
+} */

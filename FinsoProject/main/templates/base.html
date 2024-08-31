@@ -10,7 +10,7 @@
 
 </head>
 <body>
-    <nav>
+    <nav class="navv">
         <input type="checkbox" id="check">
         <label for="check" class="checkbtn">
             <i class="fas fa-bars"></i>
@@ -18,8 +18,9 @@
         <label class="logo">Finso</label>
         <ul class="navul">
             {% if user.is_authenticated %}
+                <li><a href="{% url 'addall' %}"><i class="fas fa-plus"></i><p>Add</p></a></li>
                 <li><a href="#"><i class="fas fa-list icon"></i><p>List</p></a></li>
-                <li><a href="#"><i class="fas fa-tachometer-alt icon"></i><p>Dashboard</p></a></li>
+                <li><a href="{% url 'dashboard' %}"><i class="fas fa-tachometer-alt icon"></i><p>Dashboard</p></a></li>
                 <li><a href="#"><i class="fas fa-chart-line icon"></i><p>Analytics</p></a></li>
                 <li><a href="#"><i class="fas fa-bell icon"></i><p>Notifications</p></a></li>
                 <li><a href="{% url 'logout' %}"><i class="fas fa-sign-out-alt icon"></i><p>Logout</p></a></li>
