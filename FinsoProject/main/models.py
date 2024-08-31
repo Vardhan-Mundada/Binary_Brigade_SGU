@@ -27,7 +27,7 @@ class ExpenseCategory(models.Model):
         return self.name
     
 
-class transaction(models.Model):
+class Transaction(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     category = models.ForeignKey(ExpenseCategory, on_delete=models.CASCADE, default='Miscellaneous')
     amount = models.DecimalField(max_digits=10, decimal_places=2)

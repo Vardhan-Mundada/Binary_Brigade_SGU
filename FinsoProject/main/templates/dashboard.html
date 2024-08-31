@@ -2,17 +2,164 @@
 
 {% block title %}Dashboard{% endblock %}
 
-{% block header %}
-    <div class="profile-info">
-        <img src="{{ profile.profile_image.url }}" alt="Profile Photo" class="profile-photo">
-        <h2>{{ profile.user.username }}</h2>
-    </div>
-{% endblock %}
-
 {% block content %}
-    <div class="financial-summary">
-        <p>Income this month: ${{ income_this_month }}</p>
-        <p>Expenses this month: ${{ expenses_this_month }}</p>
-        <p>Total Balance: ${{ profile.basic_income + income_this_month - expenses_this_month }}</p>
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'style.css' %}">
+
+    <style>
+        .container {
+            margin: 1rem 3rem;
+            max-width: 90%;
+        }
+        .main-container {
+            padding: 1rem;
+            border-radius: 0.5rem;
+            box-shadow: 0 0.75rem 2rem rgba(0, 0, 0, 0.1);
+            background-color: #f9f9f9;
+        }
+        .card {
+            background-color: #ffffff;
+            color: #333;
+            margin-bottom: 1rem;
+            padding: 1rem;
+            border-radius: 0.5rem;
+            box-shadow: 0 0.25rem 0.5rem rgba(0, 0, 0, 0.1);
+        }
+        .flex-container {
+            display: flex;
+            flex-direction: row;
+            justify-content: space-between;
+            gap: 1rem;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 2rem;
+        }
+        table, th, td {
+            border: 1px solid #ddd;
+        }
+        th, td {
+            padding: 0.5rem;
+            text-align: left;
+        }
+        th {
+            background-color: #f4f4f4;
+        }
+        .button {
+            background: #007bff;
+            color: white;
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: 0.25rem;
+            font-size: 1rem;
+            cursor: pointer;
+            margin: 0.5rem;
+        }
+        .button:hover {
+            background: #0056b3;
+        }
+        .add-button {
+            background: #28a745;
+        }
+        .add-button:hover {
+            background: #218838;
+        }
+        .export-button {
+            background: #17a2b8;
+        }
+        .export-button:hover {
+            background: #117a8b;
+        }
+        .recent-expenses {
+            margin-top: 2rem;
+        }
+    </style>
+
+    <div class="main-container">
+        <h1>Dashboard</h1>
+
+        <div class="flex-container">
+            <!-- Income Sources Table -->
+            <div class="card">
+                <h2>Income Sources</h2>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Source</th>
+                            <th>Amount</th>
+                            <th>Date</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for income in incomes %}
+                        <tr>
+                            <td>{{ income.source }}</td>
+                            <td>${{ income.amount }}</td>
+                            <td>{{ income.date }}</td>
+                        </tr>
+                        {% empty %}
+                        <tr>
+                            <td colspan="3">No income sources found.</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+                <button class="button add-button">Add Income</button>
+            </div>
+
+            <!-- Categories Table -->
+            <div class="card">
+                <h2>Categories</h2>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Category</th>
+                            <th>Budget Limit</th>
+                            <th>Current Expense</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for category in categories %}
+                        <tr>
+                            <td>{{ category.name }}</td>
+                            <td>${{ category.budget_limit }}</td>
+                            <td>${{ category.current_expense }}</td>
+                        </tr>
+                        {% empty %}
+                        <tr>
+                            <td colspan="3">No categories found.</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+                <button class="button add-button">Add Category</button>
+            </div>
+        </div>
+
+        <!-- Recent Expenses -->
+        <div class="card recent-expenses">
+            <h2>Recent Expenses</h2>
+            {% for expense in recent_expenses %}
+            <div class="card">
+                <p>Date: {{ expense.transaction_date }}</p>
+                <p>Category: {{ expense.category.name }}</p>
+                <p>Amount: ${{ expense.amount }}</p>
+            </div>
+            {% empty %}
+            <div class="card">
+                <p>No recent expenses found.</p>
+            </div>
+            {% endfor %}
+        </div>
+
+        <!-- Export Report Button -->
+        <div class="card">
+            <button class="button export-button">Export Report</button>
+        </div>
     </div>
+
+    <script>
+        // Add your JavaScript functions here if needed
+    </script>
 {% endblock %}

@@ -59,8 +59,8 @@ margin-bottom: 26px;
 .container {
   position: relative;
   z-index: 1;
-  max-width: 300px;
-  margin: 0 auto;
+  max-width: 50%;
+  margin-left: 3rem;
 }
 
 body {
@@ -74,4 +74,11 @@ body {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   min-height: 100vh;
+}
+
+.login-header {
+  color: white;
+  font-size: 1.2em;
+  text-align: center;
+  margin-top: 10px;
 }

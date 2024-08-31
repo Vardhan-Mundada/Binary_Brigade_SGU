@@ -1,0 +1,156 @@
+<!-- templates/category_list.html -->
+{% extends 'base.html' %}
+
+{% block title %}Category List{% endblock %}
+
+{% block content %}
+<style>
+    /* category_list.css */
+
+    .category-title {
+        text-align: center;
+        margin-top: 50px;
+        color: #333;
+        font-size: 30px;
+    }
+
+    .category-list {
+        list-style-type: none;
+        padding: 0;
+        margin-top: 20px;
+    }
+
+    .category-item {
+        background-color: #ffffff;
+        padding: 15px;
+        margin-bottom: 20px;
+        border-radius: 8px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        margin-left: 5rem;
+        margin-right: 5rem;
+        position: relative;
+    }
+
+    .category-item:hover {
+        background-color: #f0f0f0;
+    }
+
+    .category-name {
+        font-size: 18px;
+        font-weight: bold;
+    }
+
+    .category-budget {
+        font-size: 16px;
+        color: #555;
+    }
+
+    .category-links {
+        position: absolute;
+        top: 50%;
+        transform: translateY(-50%);
+        right: 15px;
+    }
+
+    .category-button {
+        display: inline-block;
+        padding: 8px 12px;
+        background-color: #4caf50; /* Changed button color */
+        color: #fff;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+        font-size: 14px;
+        text-decoration: none;
+        transition: background-color 0.3s ease;
+        margin-left: 5px;
+    }
+
+    .category-button:hover {
+        background-color: #45a049; /* Darker hover color */
+    }
+
+    .category-form {
+        max-width: 400px;
+        margin: 0 auto;
+        background-color: #f9f9f9;
+        padding: 20px;
+        border-radius: 8px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        margin-top: 20px;
+    }
+
+    .category-form label {
+        display: block;
+        font-weight: bold;
+        margin-bottom: 10px;
+        font-size: 18px;
+    }
+
+    .category-form input[type="text"] {
+        width: calc(100% - 20px);
+        padding: 10px;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+        box-sizing: border-box;
+        margin-bottom: 20px;
+        transition: border-color 0.3s ease;
+        font-size: 16px;
+    }
+
+    .category-form button[type="submit"] {
+        background-color: #45a049;
+        color: #fff;
+        padding: 12px 24px;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+        font-size: 16px;
+        transition: background-color 0.3s ease;
+        width: 100%;
+        margin-top: 20px;
+    }
+
+    .category-form button[type="submit"]:hover {
+        background-color: #0ca90f;
+    }
+
+    .refresh-button {
+        display: block;
+        text-align: center;
+        margin: 20px auto;
+        font-size: 16px;
+        color: #fff;
+        background-color: #45a049;
+        border: none;
+        border-radius: 4px;
+        padding: 12px 24px;
+        text-decoration: none;
+        transition: background-color 0.3s ease;
+        width: 200px;
+    }
+
+    .refresh-button:hover {
+        background-color: #0ca90f;
+    }
+</style>
+    <h1 class="category-title">Category List</h1>
+    
+    <ul class="category-list">
+        {% for category in categories %}
+            <li>
+                {{ category.name }} - Budget Limit: {{ category.budget_limit }}
+                
+            </li>
+        {% endfor %}
+    </ul>
+
+    <h2 class="category-title">Add Category</h2>
+    <form method="post" action="{% url 'add_category' %}" class="category-form">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit">Save</button>
+    </form>
+
+    <a href="{% url 'category_list' %}" class="category-button">Refresh Category List</a>
+{% endblock %}
