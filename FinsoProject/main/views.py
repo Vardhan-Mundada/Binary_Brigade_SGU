@@ -373,7 +373,6 @@ def analytics(request):
     }
     recent_expenses = Transaction.objects.filter(user=request.user).order_by('-transaction_date')[:7]
 
-
     pie_chart = create_pie_chart(request.user, categories, expenses)
     bar_chart = create_bar_chart(request.user, categories, expenses)
 
@@ -382,6 +381,8 @@ def analytics(request):
         'sources': [source['source'] for source in income_sources],
         'amounts': [source['total_income'] for source in income_sources]
     }
+
+    # Predefined categories with amount calculation
     predefined_categories = [
         {'name': 'Food', 'icon': 'icons/food.png'},
         {'name': 'Transportation', 'icon': 'icons/transportation.png'},
@@ -389,6 +390,13 @@ def analytics(request):
         {'name': 'Health', 'icon': 'icons/health.png'},
         {'name': 'Miscellaneous', 'icon': 'icons/miscellaneous.png'}
     ]
+
+    # Add amount to predefined categories
+    for category in predefined_categories:
+        category_name = category['name']
+        category_total = expense_sources.filter(category__name=category_name).aggregate(total_amount=Sum('amount'))['total_amount'] or 0
+        category['amount'] = category_total
+
     context = {
         'time_interval': time_interval,
         'categories': categories,
@@ -405,7 +413,6 @@ def analytics(request):
     }
 
     return render(request, 'analytics.html', context)
-
 import matplotlib
 matplotlib.use('Agg')
 import matplotlib.pyplot as plt
