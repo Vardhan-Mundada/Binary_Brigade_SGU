@@ -36,7 +36,7 @@ class Transaction(models.Model):
     transaction_date = models.DateTimeField(default=timezone.now)
 
     def __str__(self):
-        return self.amount
+        return str(self.amount)
     
 
 class Income(models.Model):
