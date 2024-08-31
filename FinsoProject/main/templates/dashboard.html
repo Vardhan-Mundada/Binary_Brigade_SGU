@@ -8,8 +8,9 @@
 
     <style>
         .container {
-            margin: 1rem 3rem;
-            max-width: 90%;
+            margin: 1rem auto;
+            padding: 1rem;
+            max-width: 1200px;
         }
         .main-container {
             padding: 1rem;
@@ -27,9 +28,9 @@
         }
         .flex-container {
             display: flex;
-            flex-direction: row;
-            justify-content: space-between;
+            flex-wrap: wrap;
             gap: 1rem;
+            justify-content: space-between;
         }
         table {
             width: 100%;
@@ -74,6 +75,29 @@
         .recent-expenses {
             margin-top: 2rem;
         }
+
+        /* Responsive Styles */
+        @media (max-width: 768px) {
+            .flex-container {
+                flex-direction: column;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .container {
+                margin: 0.5rem;
+                padding: 0.5rem;
+            }
+
+            .button {
+                font-size: 0.875rem;
+                padding: 0.5rem;
+            }
+
+            table, th, td {
+                font-size: 0.875rem;
+            }
+        }
     </style>
 
     <div class="main-container">
@@ -105,7 +129,7 @@
                         {% endfor %}
                     </tbody>
                 </table>
-                <button class="button add-button">Add Income</button>
+                <button class="button add-button"><a href="{% url 'add_income' %}">Add Income</a></button>
             </div>
 
             <!-- Categories Table -->
@@ -124,7 +148,6 @@
                         <tr>
                             <td>{{ category.name }}</td>
                             <td>Rs.{{ category.budget_limit }}</td>
-                           
                         </tr>
                         {% empty %}
                         <tr>
@@ -133,7 +156,7 @@
                         {% endfor %}
                     </tbody>
                 </table>
-                <button class="button add-button">Add Category</button>
+                <button class="button add-button"><a href="{% url 'add_category' %}">Add Category</a></button>
             </div>
         </div>
 

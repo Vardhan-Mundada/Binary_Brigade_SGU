@@ -27,6 +27,9 @@ urlpatterns=[
     path('add_mutual_fund/', views.add_mutual_fund, name='add_mutual_fund'),
     path('add_fixed_deposit/', views.add_fixed_deposit, name='add_fixed_deposit'),
     path('dashboard/', views.dashboard, name='dashboard'),
+    path('transactions/', views.transactions_list, name='transactions_list'),
+    path('charts/',views.charts_view,name="charts_view"),
+    path('cashflow_minimizer/',views.minimize_cash_flow,name="minimize_cash_flow"),
 
 
 ]

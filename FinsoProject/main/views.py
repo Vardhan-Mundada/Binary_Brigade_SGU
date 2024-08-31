@@ -26,6 +26,7 @@ from django.utils import timezone
 from .models import Stock, MutualFund, FixedDeposit
 import requests
 from .models import Stock, MutualFund, FixedDeposit
+from django.core.paginator import Paginator
 
 
 #SMS
@@ -1031,3 +1032,181 @@ def add_fixed_deposit(request):
         # return redirect('dashboard')
 
     return render(request, 'add_fixed_deposit.html')
+
+@login_required
+def transactions_list(request):
+    # Get the transactions for the logged-in user
+    user_transactions = Transaction.objects.filter(user=request.user).order_by('-transaction_date')
+
+    # Paginate transactions
+    paginator = Paginator(user_transactions, 10)  # Show 10 transactions per page
+    page_number = request.GET.get('page')
+    page_obj = paginator.get_page(page_number)
+
+    # Replace 'unknown' with 'debited'
+    for transaction in page_obj.object_list:
+        if transaction.type == 'unknown':
+            transaction.type = 'debited'
+
+    return render(request, 'transactions_list.html', {'page_obj': page_obj})
+
+@login_required
+def charts_view(request):
+    # Get the last 30 days of transactions
+    end_date = timezone.now().date()
+    start_date = end_date - timedelta(days=29)
+    start_datetime = datetime.combine(start_date, time.min)
+    end_datetime = datetime.combine(end_date, time.max)
+    
+    transactions = Transaction.objects.filter(
+        user=request.user,
+        transaction_date__range=[start_datetime, end_datetime]
+    )
+
+    # Prepare data for charts
+    dates = []
+    credited = []
+    debited = []
+    total_credited = 0
+    total_debited = 0
+
+    for i in range(30):
+        current_date = start_date + timedelta(days=i)
+        dates.append(current_date.strftime('%Y-%m-%d'))
+        
+        day_credited = transactions.filter(
+            transaction_date__date=current_date,
+            type__in=['credited', 'income']  # Include both 'credited' and 'income'
+        ).aggregate(Sum('amount'))['amount__sum'] or 0
+        
+        day_debited = transactions.filter(
+            transaction_date__date=current_date,
+            type__in=['debited', 'debit', 'expense']  # Include 'debited', 'debit', and 'expense'
+        ).aggregate(Sum('amount'))['amount__sum'] or 0
+        
+        credited.append(float(day_credited))
+        debited.append(float(day_debited))
+        
+        total_credited += day_credited
+        total_debited += day_debited
+
+    # Handle 'unknown' type transactions
+    unknown_transactions = transactions.filter(type='unknown')
+    unknown_total = unknown_transactions.aggregate(Sum('amount'))['amount__sum'] or 0
+    print(dates)
+    print(credited)
+    print(debited)
+
+    context = {
+        'dates': json.dumps(dates),
+        'credited': json.dumps(credited),
+        'debited': json.dumps(debited),
+        'total_credited': json.dumps(float(total_credited)),
+        'total_debited': json.dumps(float(total_debited)),
+        'unknown_total': json.dumps(float(unknown_total)),
+    }
+
+    return render(request, 'charts.html', context)
+
+from django.shortcuts import render
+
+def minimize_cash_flow(request):
+    if request.method == 'POST':
+        transactions_input = request.POST.get('transactions', '')
+        transactions_list = transactions_input.splitlines()
+
+        if not transactions_list:
+            return render(request, 'minimize.html', {'error': 'No transactions provided'})
+
+        try:
+            transactions, participants = parse_transactions(transactions_list)
+            minimized_transactions = minimize_transactions(transactions, participants)
+            return render(request, 'minimize.html', {
+                'minimized_transactions': minimized_transactions,
+                'original_input': transactions_input
+            })
+        except Exception as e:
+            return render(request, 'minimize.html', {
+                'error': str(e),
+                'original_input': transactions_input
+            })
+
+    return render(request, 'minimize.html')
+
+def parse_transactions(transactions_list):
+    transactions = []
+    participants = set()
+
+    for line in transactions_list:
+        parts = line.split()
+        if len(parts) != 3:
+            raise ValueError("Each transaction must have three values: sender, receiver, amount")
+        sender, receiver, amount = parts
+        sender = sender.lower()
+        receiver = receiver.lower()
+        amount = int(amount)
+        transactions.append((sender, receiver, amount))
+        participants.add(sender)
+        participants.add(receiver)
+
+    return transactions, list(participants)
+
+def minimize_transactions(transactions, participants):
+    N = len(participants)
+
+    name_to_index = {name: i for i, name in enumerate(participants)}
+    index_to_name = {i: name for i, name in enumerate(participants)}
+
+    graph = [[0] * N for _ in range(N)]
+
+    for sender, receiver, amount in transactions:
+        graph[name_to_index[sender]][name_to_index[receiver]] += amount
+
+    return run_cash_flow_algorithm(graph, index_to_name)
+
+def run_cash_flow_algorithm(graph, index_to_name):
+    N = len(graph)
+    
+    def getMin(arr):
+        minInd = 0
+        for i in range(1, N):
+            if arr[i] < arr[minInd]:
+                minInd = i
+        return minInd
+
+    def getMax(arr):
+        maxInd = 0
+        for i in range(1, N):
+            if arr[i] > arr[maxInd]:
+                maxInd = i
+        return maxInd
+
+    def minOf2(x, y):
+        return x if x < y else y
+
+    def minCashFlowRec(amount):
+        mxCredit = getMax(amount)
+        mxDebit = getMin(amount)
+
+        if amount[mxCredit] == 0 and amount[mxDebit] == 0:
+            return []
+
+        min_amount = minOf2(-amount[mxDebit], amount[mxCredit])
+        amount[mxCredit] -= min_amount
+        amount[mxDebit] += min_amount
+
+        transaction = (index_to_name[mxDebit], index_to_name[mxCredit], min_amount)
+        result = [transaction]
+
+        result += minCashFlowRec(amount)
+        return result
+
+    def minCashFlow(graph):
+        amount = [0] * N
+        for p in range(N):
+            for i in range(N):
+                amount[p] += (graph[i][p] - graph[p][i])
+        return minCashFlowRec(amount)
+
+    minimized_transactions = minCashFlow(graph)
+    return [f"{debtor} pays {creditor} {amount}" for debtor, creditor, amount in minimized_transactions]
