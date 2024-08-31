@@ -102,8 +102,37 @@ input[type="date"]:focus {
   animation: fadeIn 0.5s ease-in-out;
 }
 
+.exp-form {
+  margin-top: 2rem;
+  color: white; margin-left:10rem; padding: 3rem;
+  text-align: left;
+}
+
+.exp-form form{
+  margin-top: 2rem;
+  color: white; margin-left:10rem; padding: 3rem;
+  text-align: left;
+  min-width: 40vw;
+}
+.exp-form form input{
+  max-width: 70%;
+  float: right;
+}
+@media screen and (max-width: 600px) {
+  .expense-container {
+    padding: 20px;
+  }
+  .exp-form{
+
+    margin-left: 0;
+    margin-top: 0;
+    text-align: center;
+  }
+}
+
+
 </style>
-<div  style="color: white; margin-left:10rem; padding: 3rem;">
+<div class="exp-form">
     <h1 style="color: white;">Add Expense</h1>
 
     <form method="post" action="{% url 'add_expense' %}">
