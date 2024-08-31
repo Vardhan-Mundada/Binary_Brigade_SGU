@@ -14,12 +14,12 @@
                 <p>Please enter your credentials to login.</p>
             </div>
         </div>
-        <form method="post" class="login-form" action="/login">
+        <form method="post" class="login-form" action="{% url 'login' %}">
             {% csrf_token %}
             <input type="text" name="username" placeholder="Username" />
             <input type="password" name="password" placeholder="Password" />
             <button type="submit">Login</button>
-            <p class="message">Not registered? <a href="/register">Create an account</a></p>
+            <p class="message">Not registered? <a href="{% url 'login' %}">Create an account</a></p>
         </form>
     </div>
 </div>

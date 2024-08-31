@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container mt-4">
+    <h2 class="mb-4">Budget Notifications</h2>
+
+    {% if notifications %}
+        <ul class="list-group">
+        {% for notification in notifications %}
+            <li class="list-group-item">
+                <h5 class="mb-1">{{ notification.category }}</h5>
+                <p class="mb-1">Budget limit: ${{ notification.budget_limit|floatformat:2 }}</p>
+                <p class="mb-1">Current expenses: ${{ notification.current_expenses|floatformat:2 }}</p>
+                <p class="mb-1 text-danger">Overspend: ${{ notification.overspend|floatformat:2 }}</p>
+            </li>
+        {% endfor %}
+        </ul>
+    {% else %}
+        <p class="alert alert-info">No budget limits have been exceeded.</p>
+    {% endif %}
+</div>
+{% endblock %}

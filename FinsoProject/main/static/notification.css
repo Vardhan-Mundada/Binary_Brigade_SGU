@@ -1,0 +1,122 @@
+/* notifications.css */
+
+body {
+    font-family: Arial, sans-serif;
+    background-color: #fff;
+    /* White background */
+    color: #333;
+    /* Dark text color */
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
+    /* Hide overflow to prevent scrollbar */
+}
+
+.container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+}
+
+.card {
+    margin-top: 5rem;
+    padding-top: 100px;
+    background-color: #f0f0f0;
+    /* Light gray background for the card */
+    padding: 40px;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    /* Box shadow for depth */
+    width: 80vw;
+    /* Limiting width of the card */
+    max-height: 70vh;
+    /* Limiting height of the card */
+    overflow-y: auto;
+    /* Enable vertical scrollbar if content exceeds height */
+    transition: transform 0.3s ease;
+    /* Smooth transition effect */
+    margin-left: 2rem;
+}
+
+.inner {
+    display: flex;
+    justify-content: center;
+}
+
+/* .card:hover {
+    transform: scale(1.05); /* Scale up on hover */
+
+h1 {
+    text-align: center;
+}
+
+.notification-content {
+    margin-top: 20px;
+}
+
+.exceeded-categories ul,
+.reminders ul {
+    list-style-type: none;
+    padding: 0;
+}
+
+.exceeded-categories ul li,
+.reminders ul li {
+    margin-bottom: 10px;
+}
+
+.exceeded-categories,
+.reminders {
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+}
+
+.reminder-card {
+    display: flex;
+    flex-direction: row;
+    background-color: #fff;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    /* Box shadow for depth */
+    margin-top: 20px;
+    margin-right: 20px;
+    /* Spacing between cards */
+    transition: transform 0.3s ease;
+    /* Smooth transition effect */
+    flex: 0 0 calc(50% - 20px);
+    /* Two cards per row */
+}
+
+.reminder-card:hover {
+    transform: scale(1.05);
+    /* Scale up on hover */
+}
+
+h2 {
+    margin-top: 0;
+}
+
+/* notifications.css */
+
+/* Hide default scrollbar */
+::-webkit-scrollbar {
+    width: 0;
+    /* Remove scrollbar width */
+}
+
+/* Track */
+::-webkit-scrollbar-track {
+    background: transparent;
+    /* Set scrollbar track background */
+}
+
+/* Handle */
+::-webkit-scrollbar-thumb {
+    background: #888;
+    /* Set scrollbar handle color */
+    border-radius: 10px;
+    /* Set scrollbar handle border radius */
+}
