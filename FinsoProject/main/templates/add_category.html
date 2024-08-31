@@ -3,9 +3,10 @@
 {% block title %}Add Category{% endblock %}
 
 {% block content %}
-<style>
-    /* add_category.css */
 
+{% load static %}
+<link rel="stylesheet" href="{% static 'style.css' %}">
+<style>
     /* Reset CSS */
     * {
         margin: 0;
@@ -13,10 +14,7 @@
         box-sizing: border-box;
     }
 
-    body {
-        font-family: Arial, sans-serif;
-        background-color: #f9f9f9; /* Light gray background */
-    }
+    
 
     .content {
         margin-left: 80px; /* Adjust according to navbar width */
@@ -34,9 +32,8 @@
     .category-form {
         max-width: 500px; /* Increased width */
         padding-top: 5rem;
-        margin: 10rem auto; /* Center the form horizontally */
-        
-        background-color: #fff; /* White background */
+        /* margin: 10rem auto;  */
+         /* White background */
         padding: 40px; /* Increased padding */
         border-radius: 8px;
         box-shadow: 0 0 20px rgba(0, 0, 0, 0.3); /* Intense box shadow */
@@ -184,6 +181,9 @@
             padding: 0;
             margin: 0;
         }
+        body{
+            justify-content: flex-start;
+        }
 
         .category-list li {
             padding: 1rem;
@@ -201,16 +201,7 @@
         <a href="{% url 'category_list' %}" class="category-button-back">Back to Category List</a>
     </form>
 
-    <section class="category-list" style="margin-top: 2rem;">
-        <h2 style="color: rgb(0, 0, 0);">Categories</h2>
-        <ul style="list-style: none; display: flex; flex-wrap: wrap; padding: 0;">
-            {% for category in categories %}
-                <li style="padding: 1rem; background-color: rgba(32, 58, 81, 0); margin-right: 1%; box-shadow: 0 0.25rem 2rem 0 rgba(0, 0, 0, 0.205); margin-top: 1rem; border-radius: 10px; color: rgb(0, 0, 0);">
-                    {{ category.name }} <br> <span>Limit :</span>{{ category.budget_limit }}
-                </li>
-            {% endfor %}
-        </ul>
-    </section>
+    
 </div>
 
 {% endblock %}

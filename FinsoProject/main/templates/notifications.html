@@ -1,6 +1,16 @@
 {% extends "base.html" %}
 
 {% block content %}
+
+{% load static %}
+<link rel="stylesheet" href="{% static 'style.css' %}">
+<style>
+    @media screen and (max-width:480px) {
+        body{
+        justify-content: flex-start;
+    }
+    }
+</style>
 <div class="container mt-4">
     <h2 class="mb-4 text-center">Budget Notifications</h2>
 
